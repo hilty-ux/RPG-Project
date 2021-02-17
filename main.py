@@ -1,10 +1,10 @@
 import pygame
 
-
 import Player
 import text
 import Decoration_Classes as Dc
 import Ground_Classes as Gr
+import Ennemies as En
 
 
 class Game:
@@ -25,19 +25,22 @@ class Game:
 
         self.second_grass = pygame.image.load("assets/Assets rpg pack/rpg-pack/tiles/generic-rpg-Slice.png")
         self.second_grass = pygame.transform.scale(self.second_grass, (100, 100))
-        self.second_tree = pygame.image.load("assets/Assets rpg pack/rpg-pack/props n decorations/generic-rpg-tree01.png")
-        self.second_tree = pygame.transform.scale(self.second_tree, (53*3, 74*3))
+        self.second_tree = pygame.image.load(
+            "assets/Assets rpg pack/rpg-pack/props n decorations/generic-rpg-tree01.png")
+        self.second_tree = pygame.transform.scale(self.second_tree, (53 * 3, 74 * 3))
         self.fern = pygame.image.load("assets/Assets rpg pack/rpg-pack/props n decorations/generic-rpg-grass01.png")
-        self.fern = pygame.transform.scale(self.fern, (13*3, 7*3))
+        self.fern = pygame.transform.scale(self.fern, (13 * 3, 7 * 3))
         self.second_road_left = pygame.image.load("assets/Assets rpg pack/rpg-pack/tiles/generic-rpg-tile14.png")
         self.second_road_right = pygame.image.load("assets/Assets rpg pack/rpg-pack/tiles/generic-rpg-tile48.png")
         self.second_road_right = pygame.transform.scale(self.second_road_right, (100, 100))
         self.second_road_left = pygame.transform.scale(self.second_road_left, (100, 100))
         self.road_corner_top_left = pygame.image.load("assets/Assets rpg pack/rpg-pack/tiles/generic-rpg-tile19.png")
         self.road_corner_top_left = pygame.transform.scale(self.road_corner_top_left, (100, 100))
-        self.third_tree = pygame.image.load("assets/Assets rpg pack/rpg-pack/props n decorations/generic-rpg-tree02.png")
-        self.third_tree = pygame.transform.scale(self.third_tree, (54*3, 74*3))
-        self.road_corner_bottom_right_empty = pygame.image.load("assets/Assets rpg pack/rpg-pack/tiles/generic-rpg-tile51.png")
+        self.third_tree = pygame.image.load(
+            "assets/Assets rpg pack/rpg-pack/props n decorations/generic-rpg-tree02.png")
+        self.third_tree = pygame.transform.scale(self.third_tree, (54 * 3, 74 * 3))
+        self.road_corner_bottom_right_empty = pygame.image.load(
+            "assets/Assets rpg pack/rpg-pack/tiles/generic-rpg-tile51.png")
         self.road_corner_bottom_right_empty = pygame.transform.scale(self.road_corner_bottom_right_empty, (100, 100))
         self.road_top = pygame.image.load("assets/Assets rpg pack/rpg-pack/tiles/generic-rpg-tile25.png")
         self.road_top = pygame.transform.scale(self.road_top, (100, 100))
@@ -63,27 +66,49 @@ class Game:
         # pour rendre le mouvement plus fluide, la classe du joueur est deux fois plus importantes que celle de
         # l'environnement, pour que le joueur se déplace de demi-cases mais que l'environnement soit constitué de
         # cases à part entière
-        self.map_player = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 3, 3, 0, 0, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 3, 3, 3, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+        self.map_player = [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+             0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+             0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+             0],
+            [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+             0],
+            [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+             0],
+            [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+             0],
+            [0, 0, 0, 0, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+             0],
+            [0, 3, 3, 0, 0, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+             0],
+            [0, 3, 3, 3, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+             0],
+            [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0,
+             0],
+            [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0,
+             0],
+            [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0,
+             0],
+            [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0,
+             0],
+            [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0,
+             0],
+            [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+             0],
+            [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+             0],
+            [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+             0],
+            [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+             0],
+            [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+             0],
+            [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+             0],
+            [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+             0]]
 
         self.map_others = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                            [0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0],
@@ -96,6 +121,18 @@ class Game:
                            [0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0],
                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                            [0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+
+        self.map_hostile = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 1, 1, 2, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 1, 1, 2, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 1, 1, 2, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 1, 1, 2, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 2, 2, 2, 2, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
         # initialise les variables relatives au joueur ; sa direction de départ, ses statuts ainsi que sa classe
         self.pl = Player.Player(self.screen, self.map_player)
@@ -133,6 +170,11 @@ class Game:
         self.add_road_top_left_corner_full = lambda x, y: self.ground_group.add(Gr.RoadTopLeftFull((x, y)))
         self.add_road_bot_left_corner_empty = lambda x, y: self.ground_group.add(Gr.RoadBotRightEmpty((x, y)))
 
+        # partie du monstre
+        self.mon = En.Monster(self.screen, self.map_hostile)
+        self.monster_group = pygame.sprite.Group()
+        self.monster_group.add(self.mon)
+
     def show_map(self):
 
         # va analyser la map pour ajouter à un groupe tous les sols avec leurs coordonnées correspondantes
@@ -141,19 +183,19 @@ class Game:
         for row in range(len(self.map_ground)):
             for cell in range(len(self.map_ground[row])):
                 if self.map_ground[row][cell] == 0:
-                    self.add_grass(cell*100, row*100)
+                    self.add_grass(cell * 100, row * 100)
                 elif self.map_ground[row][cell] == 1:
-                    self.add_road_left(cell*100, row*100)
+                    self.add_road_left(cell * 100, row * 100)
                 elif self.map_ground[row][cell] == 2:
-                    self.add_road_right(cell*100, row*100)
+                    self.add_road_right(cell * 100, row * 100)
                 elif self.map_ground[row][cell] == 4:
-                    self.add_road_top_left_corner_full(cell*100, row*100)
+                    self.add_road_top_left_corner_full(cell * 100, row * 100)
                 elif self.map_ground[row][cell] == 5:
-                    self.add_road_bot_left_corner_empty(cell*100, row*100)
+                    self.add_road_bot_left_corner_empty(cell * 100, row * 100)
                 elif self.map_ground[row][cell] == 6:
-                    self.add_road_top(cell*100, row*100)
+                    self.add_road_top(cell * 100, row * 100)
                 elif self.map_ground[row][cell] == 7:
-                    self.add_road_bot(cell*100, row*100)
+                    self.add_road_bot(cell * 100, row * 100)
 
     def show_decorative(self):
 
@@ -162,15 +204,21 @@ class Game:
         for row in range(len(self.map_others)):
             for cell in range(len(self.map_others[row])):
                 if self.map_others[row][cell] == 1:
-                    self.add_blue_tree(cell*100, row*100)
+                    self.add_blue_tree(cell * 100, row * 100)
                 elif self.map_others[row][cell] == 2:
-                    self.add_fern(cell*100, row*100)
+                    self.add_fern(cell * 100, row * 100)
                 elif self.map_others[row][cell] == 3:
-                    self.add_red_tree(cell*100, row*100)
+                    self.add_red_tree(cell * 100, row * 100)
                 elif self.map_others[row][cell] == 4:
-                    self.add_lake(cell*100, row*100)
+                    self.add_lake(cell * 100, row * 100)
                 else:
                     pass
+
+    def find_collision(self):
+        for sprite in self.monster_group:
+            get_hits = self.pl.rect.colliderect(sprite.rect)
+            if get_hits:
+                sprite.kill()
 
     def main_loop(self):
 
@@ -224,11 +272,14 @@ class Game:
             self.decorative_group_others.draw(self.screen)
             self.pl.update()
             self.pl.move_animation(self.direction, self.moving)
+            self.monster_group.draw(self.screen)
+            self.monster_group.update(self.pl.current_pos)
             self.decorative_group_tree.draw(self.screen)
-
             # anime le joueur si il est en train d'attaquer
             if self.attacking:
                 self.pl.attack(self.direction)
+                if self.pl.index_animation_att == 2:
+                    self.find_collision()
                 if self.pl.attack(self.direction) == "end":
                     self.attacking = False
                     self.pl.index_animation_att = 0
@@ -238,9 +289,8 @@ class Game:
             pygame.display.flip()  # met à jour l'écran
             self.clock.tick(60)  # met les FPS à 60
 
-# RASPBERRY => pygame.display.set_mode((1900x1000))
-# WINDOWS => pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-screen = pygame.display.set_mode((1900, 1000))
+
+screen = pygame.display.set_mode((100, 0), pygame.FULLSCREEN)
 pygame.init()
 
 game = Game(screen)
