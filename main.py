@@ -238,8 +238,9 @@ class Game:
             pygame.display.flip()  # met à jour l'écran
             self.clock.tick(60)  # met les FPS à 60
 
-
-screen = pygame.display.set_mode((100, 0), pygame.FULLSCREEN)
+# RASPBERRY => pygame.display.set_mode((1900x1000))
+# WINDOWS => pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+screen = pygame.display.set_mode((1900, 1000))
 pygame.init()
 
 game = Game(screen)
