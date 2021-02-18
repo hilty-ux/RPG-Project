@@ -7,6 +7,7 @@ class Player:
         self.screen = screen
         self.map = current_map
         self.current_pos = [10, 18]
+        self.inside_pos = [8, 8]
 
         self.sprite_front = [pygame.image.load("assets/Player/Walk/walk down1.png"),
                              pygame.image.load("assets/Player/Walk/walk down2.png"),
@@ -116,39 +117,71 @@ class Player:
         else:
             return "end"
 
-    def move(self, direction):
+    def move(self, direction, inside_map, inside):
 
-        if direction == "up":
-            try:
-                if self.map[self.current_pos[1] - 1][self.current_pos[0]] != 3:
-                    if self.current_pos[1] > 0:
-                        self.current_pos[1] -= 1
-            except IndexError as e:
-                print(e)
-        elif direction == "down":
-            try:
-                if self.map[self.current_pos[1] + 1][self.current_pos[0]] != 3:
-                    self.current_pos[1] += 1
-            except IndexError as e:
-                print(e)
-        elif direction == "left":
-            try:
-                if self.map[self.current_pos[1]][self.current_pos[0] - 1] != 3:
-                    if self.current_pos[0] > 0:
-                        self.current_pos[0] -= 1
-            except IndexError as e:
-                print(e)
-        elif direction == "right":
-            try:
-                if self.map[self.current_pos[1]][self.current_pos[0] + 1] != 3:
-                    self.current_pos[0] += 1
-            except IndexError as e:
-                print(e)
+        if not inside:
+            if direction == "up":
+                try:
+                    if self.map[self.current_pos[1] - 1][self.current_pos[0]] != 3:
+                        if self.current_pos[1] > 0:
+                            self.current_pos[1] -= 1
+                except IndexError as e:
+                    print(e)
+            elif direction == "down":
+                try:
+                    if self.map[self.current_pos[1] + 1][self.current_pos[0]] != 3:
+                        self.current_pos[1] += 1
+                except IndexError as e:
+                    print(e)
+            elif direction == "left":
+                try:
+                    if self.map[self.current_pos[1]][self.current_pos[0] - 1] != 3:
+                        if self.current_pos[0] > 0:
+                            self.current_pos[0] -= 1
+                except IndexError as e:
+                    print(e)
+            elif direction == "right":
+                try:
+                    if self.map[self.current_pos[1]][self.current_pos[0] + 1] != 3:
+                        self.current_pos[0] += 1
+                except IndexError as e:
+                    print(e)
+        else:
+            if direction == "up":
+                try:
+                    if inside_map[self.inside_pos[1] - 1][self.inside_pos[0]] != 3:
+                        if self.inside_pos[1] > 0:
+                            self.inside_pos[1] -= 1
+                except IndexError as e:
+                    print(e)
+            elif direction == "down":
+                try:
+                    if inside_map[self.inside_pos[1] + 1][self.inside_pos[0]] != 3:
+                        self.inside_pos[1] += 1
+                except IndexError as e:
+                    print(e)
+            elif direction == "left":
+                try:
+                    if inside_map[self.inside_pos[1]][self.inside_pos[0] - 1] != 3:
+                        if self.inside_pos[0] > 0:
+                            self.inside_pos[0] -= 1
+                except IndexError as e:
+                    print(e)
+            elif direction == "right":
+                try:
+                    if inside_map[self.inside_pos[1]][self.inside_pos[0] + 1] != 3:
+                        self.inside_pos[0] += 1
+                except IndexError as e:
+                    print(e)
 
-    def update(self):
+    def update(self, inside_house):
         try:
             print(self.map[self.current_pos[1]][self.current_pos[0]], self.current_pos)
         except Exception as e:
             print(e)
-        self.rect.center = self.current_pos[0] * 50 + 25, self.current_pos[1] * 50 + 25
-        self.screen.blit(self.image, self.rect)
+        if not inside_house:
+            self.rect.center = self.current_pos[0] * 50 + 25, self.current_pos[1] * 50 + 25
+            self.screen.blit(self.image, self.rect)
+        else:
+            self.rect.center = self.inside_pos[0] * 50 + 25 + 250, self.inside_pos[1] * 50 + 25 + 250
+            self.screen.blit(self.image, self.rect)

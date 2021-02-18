@@ -12,6 +12,7 @@ class Monster(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
         self.current_pos = [13, 2]
+        self.current_inside_house_pos = [0, 0]
 
         self.rect.x, self.rect.y = self.current_pos[0]*100, self.current_pos[1]*100
 
@@ -64,7 +65,7 @@ class Monster(pygame.sprite.Sprite):
         else:
             routine = True
 
-        if self.current_time - self.delay_movement > 350:
+        if self.current_time - self.delay_movement > 500:
             self.delay_movement = self.current_time
             if chase:
                 pass  # how ?
@@ -103,4 +104,5 @@ class Monster(pygame.sprite.Sprite):
 
         self.animation()
         self.moving(current_pos)
+
         self.rect.x, self.rect.y = self.current_pos[0]*100, self.current_pos[1]*100

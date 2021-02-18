@@ -84,3 +84,27 @@ class RoadBotRightEmpty(pg.sprite.Sprite):
 
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = coordinates
+
+
+class RoadBotRightFull(pg.sprite.Sprite):
+
+    def __init__(self, coordinates):
+        super().__init__()
+
+        self.image = pg.image.load("assets/Assets rpg pack/rpg-pack/tiles/generic-rpg-tile62.png")
+        self.image = pg.transform.scale(self.image, (100, 100))
+
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = coordinates
+
+
+class RoadTopRightFull(pg.sprite.Sprite):
+
+    def __init__(self, coordinates):
+        super().__init__()
+
+        self.image = pg.image.load("assets/Assets rpg pack/rpg-pack/tiles/generic-rpg-tile60.png")
+        self.image = pg.transform.scale(self.image, (100, 100))
+
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = coordinates
