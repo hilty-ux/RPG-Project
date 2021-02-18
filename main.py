@@ -77,7 +77,7 @@ class Game:
          [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0],
          [0, 0, 0, 0, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0],
          [0, 3, 3, 0, 0, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0],
-         [0, 3, 3, 3, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0],
+         [0, 3, 3, 3, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0],
          [0, 3, 3, 3, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0],
          [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
          [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -157,6 +157,16 @@ class Game:
         self.add_road_bot_right_corner_full = lambda x, y: self.ground_group.add(Gr.RoadBotRightFull((x, y)))
         self.add_road_top_right_corner_full = lambda x, y: self.ground_group.add(Gr.RoadTopRightFull((x, y)))
 
+        self.inside_house_group_decorative = pygame.sprite.Group()
+        self.add_stairs = lambda x, y: self.inside_house_group_decorative.add(Dc.CaveStair((x, y)))
+        self.add_second_stairs = lambda x, y: self.inside_house_group_decorative.add(Dc.CaveStair2((x, y)))
+        self.add_column = lambda x, y: self.inside_house_group_decorative.add(Dc.Column((x, y)))
+        self.add_skull = lambda x, y: self.inside_house_group_decorative.add(Dc.Skull((x, y)))
+
+        self.inside_house_group_ground = pygame.sprite.Group()
+        self.add_ground = lambda x, y: self.inside_house_group_ground.add(Gr.InsideGround((x, y)))
+        self.add_wall = lambda x, y: self.inside_house_group_ground.add(Gr.InsideWall((x, y)))
+
         # partie du monstre
         self.mon = En.Monster(self.screen, self.map_hostile)
         self.monster_group = pygame.sprite.Group()
@@ -164,14 +174,23 @@ class Game:
 
         # seconde map (intérieur maison)
 
-        self.inside_house_map = [[0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0]]
+        self.inside_house_map_ground_n_walls = [[1, 1, 1, 1, 1, 1, 1, 1],
+                                                [0, 0, 0, 0, 0, 0, 0, 0],
+                                                [0, 0, 0, 0, 0, 0, 0, 0],
+                                                [0, 0, 0, 0, 0, 0, 0, 0],
+                                                [0, 0, 0, 0, 0, 0, 0, 0],
+                                                [0, 0, 0, 0, 0, 0, 0, 0]]
 
-        self.inside_house_map_player = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9],
-                                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9],
-                                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9],
+        self.inside_house_map_decorative = [[3, 0, 0, 0, 0, 0, 0, 3],
+                                            [0, 0, 0, 0, 0, 0, 0, 0],
+                                            [0, 0, 0, 0, 0, 0, 1, 0],
+                                            [0, 0, 0, 0, 0, 0, 0, 0],
+                                            [4, 0, 0, 0, 0, 0, 0, 0]]
+
+        self.inside_house_map_player = [[3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3],
+                                        [3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3],
+                                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 9, 9],
                                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -231,6 +250,26 @@ class Game:
                 else:
                     pass
 
+    def show_inside_house(self):
+
+        for row in range(len(self.inside_house_map_decorative)):
+            for cell in range(len(self.inside_house_map_decorative[row])):
+                if self.inside_house_map_decorative[row][cell] == 2:
+                    self.add_stairs(cell*100+250, row*100+250)
+                elif self.inside_house_map_decorative[row][cell] == 1:
+                    self.add_second_stairs(cell*100+250, row*100+250)
+                elif self.inside_house_map_decorative[row][cell] == 3:
+                    self.add_column(cell*100+250, row*100+150)
+                elif self.inside_house_map_decorative[row][cell] == 4:
+                    self.add_skull(cell*100+250+20, row*100+150+20)
+
+        for row in range(len(self.inside_house_map_ground_n_walls)):
+            for cell in range(len(self.inside_house_map_ground_n_walls[row])):
+                if self.inside_house_map_ground_n_walls[row][cell] == 0:
+                    self.add_ground(cell*100+250, row*100+150)
+                elif self.inside_house_map_ground_n_walls[row][cell] == 1:
+                    self.add_wall(cell*100+250, row*100+150)
+
     def find_collision(self):
 
         for sprite in self.monster_group:
@@ -248,6 +287,8 @@ class Game:
         pygame.draw.rect(self.screen, (0, 255, 0), [self.screen.get_width() // 2, self.screen.get_height() // 2,
                                                     self.screen.get_width() // 4, 25])
         pygame.display.flip()
+
+        self.show_inside_house()
 
         while self.running:
 
@@ -311,20 +352,33 @@ class Game:
                     self.attacking = False
                     self.pl.index_animation_att = 0
 
-            if self.map_player[self.pl.current_pos[1]][self.pl.current_pos[0]] == 8:
+            if self.map_player[self.pl.current_pos[1]][self.pl.current_pos[0]] == 8 and not self.inside_house:
                 self.inside_house = True
+                self.direction = "right"
 
             if self.inside_house:
                 self.screen.blit(self.flou, (0, 0))
                 pygame.draw.rect(self.screen, (0, 0, 0), [250, 250, 800, 450])
+                self.inside_house_group_ground.draw(self.screen)
+                self.inside_house_group_decorative.draw(self.screen)
                 self.pl.update(self.inside_house)
-                if self.inside_house_map_player[self.pl.inside_pos[1]-1][self.pl.inside_pos[0]-1] == 9:
+                index = [0, 0]
+                if self.pl.inside_pos[0] - 1 < 0:
+                    index[0] = 0
+                else:
+                    index[0] = self.pl.inside_pos[0] - 1
+                if self.pl.inside_pos[1] - 1 < 0:
+                    index[1] = 0
+                else:
+                    index[1] = self.pl.inside_pos[1] - 1
+
+                if self.inside_house_map_player[index[1]][index[0]] == 9:
                     self.inside_house = False
                     self.pl.current_pos = [30, 2]
                     self.pl.inside_pos = [8, 8]
 
-            if len(self.monster_group) == 0:
-                self.running = False
+            """if len(self.monster_group) == 0:
+                self.running = False"""
 
             pygame.mouse.set_visible(False)  # rends invisible la souris
             self.current_time = pygame.time.get_ticks()  # met à jour le temps

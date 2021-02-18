@@ -108,3 +108,27 @@ class RoadTopRightFull(pg.sprite.Sprite):
 
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = coordinates
+
+
+class InsideGround(pg.sprite.Sprite):
+
+    def __init__(self, coordinates):
+        super().__init__()
+
+        self.image = pg.image.load("assets/Inside House/Sol.png")
+        self.image = pg.transform.scale(self.image, (100, 100))
+
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = coordinates
+
+
+class InsideWall(pg.sprite.Sprite):
+
+    def __init__(self, coordinates):
+        super().__init__()
+
+        self.image = pg.image.load("assets/Inside House/Mur.png")
+        self.image = pg.transform.scale(self.image, (100, 100))
+
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = coordinates

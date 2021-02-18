@@ -83,3 +83,51 @@ class Barrier(pg.sprite.Sprite):
 
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = coordinates
+
+
+class CaveStair(pg.sprite.Sprite):
+
+    def __init__(self, coordinates):
+        super().__init__()
+
+        self.image = pg.image.load("assets/Inside House/CaveStair.png")
+        self.image = pg.transform.scale(self.image, (100, 100))
+
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = coordinates
+
+
+class CaveStair2(pg.sprite.Sprite):
+
+    def __init__(self, coordinates):
+        super().__init__()
+
+        self.image = pg.image.load("assets/Inside House/CaveStair2.png")
+        self.image = pg.transform.scale(self.image, (200, 100))
+
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = coordinates
+
+
+class Column(pg.sprite.Sprite):
+
+    def __init__(self, coordinates):
+        super().__init__()
+
+        self.image = pg.image.load("assets/Inside House/Column.png")
+        self.image = pg.transform.scale(self.image, (100, 200))
+
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = coordinates
+
+
+class Skull(pg.sprite.Sprite):
+
+    def __init__(self, coordinates):
+        super().__init__()
+
+        self.image = pg.image.load("assets/Inside House/Crane.png")
+        self.image = pg.transform.scale(self.image, (50, 50))
+
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = coordinates

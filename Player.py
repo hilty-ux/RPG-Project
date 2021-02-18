@@ -7,7 +7,7 @@ class Player:
         self.screen = screen
         self.map = current_map
         self.current_pos = [10, 18]
-        self.inside_pos = [8, 8]
+        self.inside_pos = [1, 4]
 
         self.sprite_front = [pygame.image.load("assets/Player/Walk/walk down1.png"),
                              pygame.image.load("assets/Player/Walk/walk down2.png"),
@@ -98,11 +98,13 @@ class Player:
     def attack(self, direction):
         self.time = pygame.time.get_ticks()
 
-        if self.time - self.delay_attack_anim > 20:
+        # délai entre chaque frame est de 22 ms
+        if self.time - self.delay_attack_anim > 22:
             self.delay_attack_anim = self.time
             if self.index_animation_att < 3:
                 self.index_animation_att += 1
 
+        # en fonction de la direction les sprites sont différentes
         if direction == "front":
             self.image = self.attack_sprites_front[self.index_animation_att]
         elif direction == "back":
@@ -112,6 +114,7 @@ class Player:
         elif direction == "left":
             self.image = self.attack_sprites_left[self.index_animation_att]
 
+        # dis si l'animation est terminée ou pas pour savoir si le joueur peut bouger ou non
         if self.index_animation_att < 3:
             return "not ended"
         else:
