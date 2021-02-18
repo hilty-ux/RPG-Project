@@ -1,4 +1,5 @@
 import pygame
+from sys import platform
 
 import Player
 import text
@@ -334,7 +335,12 @@ class Game:
 # si raspberry => pygame.display.set_mode((1900, 1000))
 # si windows => pygame.display.set_mode((0, 0), pygame.FULLSCREEN
 # si mac => qui a un mac ?
-screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+
+# trouve l'OS de l'ordinateur, puis change la taille de l'écran en fonction
+if platform == "win32":
+    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+else:
+    screen = pygame.display.set_mode((1900, 1000))
 pygame.init()
 
 game = Game(screen)
