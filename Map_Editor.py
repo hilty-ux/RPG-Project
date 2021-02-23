@@ -111,7 +111,7 @@ class MainDisplay:
         map_package = {"map_ground": self.map_ground_empty,
                        "map_decorative": self.map_decorative_empty,
                        "map_collision": self.collision_map,
-                       "path_preview": 'map storage/New{}.png'.format(len(self.all_maps["all maps"]) + 1)
+                       "path_preview": 'map storage/New{}.png'.format(map_number["map_number"] + 1)
                        }
 
         self.all_maps["all maps"][name] = map_package

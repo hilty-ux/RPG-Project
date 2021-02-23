@@ -416,6 +416,8 @@ class Game:
                             elif self.actual_selection == 2:
                                 self.menu = False
                                 self.map_loader = True
+                                # met a jour les maps disponibles
+                                self.MapLoader = ml.MainDisplay(self.screen)
                             elif self.actual_selection == 3:
                                 self.menu = False
                                 self.game = False
@@ -486,11 +488,17 @@ class Game:
 
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         if event.button == 4:
-                            if self.find_first(self.MapLoader.maps_group).rect.y < 25:
-                                self.MapLoader.maps_group.update("down", False, pygame.mouse.get_pos())
+                            try:
+                                if self.find_first(self.MapLoader.maps_group).rect.y < 25:
+                                    self.MapLoader.maps_group.update("down", False, pygame.mouse.get_pos())
+                            except AttributeError:
+                                pass
                         if event.button == 5:
-                            if self.find_last(self.MapLoader.maps_group).rect.y > self.H - 300:
-                                self.MapLoader.maps_group.update("up", False, pygame.mouse.get_pos())
+                            try:
+                                if self.find_last(self.MapLoader.maps_group).rect.y > self.H - 300:
+                                    self.MapLoader.maps_group.update("up", False, pygame.mouse.get_pos())
+                            except AttributeError:
+                                pass
                         if event.button == 1:
                             self.MapLoader.maps_group.update(None, True, pygame.mouse.get_pos())
                             if self.MapLoader.button_restore_default_surf_rect.collidepoint(event.pos):

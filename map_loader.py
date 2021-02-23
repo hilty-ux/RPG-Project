@@ -138,6 +138,8 @@ class CreateFile(pygame.sprite.Sprite):
         self.rect.y = index * 325
 
     def delete(self):
+        global update_map
+
         with open("map storage/map.json") as map_:
             maps = json.load(map_)
 
@@ -146,6 +148,17 @@ class CreateFile(pygame.sprite.Sprite):
         with open("map storage/map.json", "w") as map_:
             json.dump(maps, map_)
 
+        # si la map est supprimée, pour éviter que la map supprimée soit toujours choisie
+        # pour jouer, on remet la map de base
+        with open("map storage/actual_map.json") as map_:
+            current_map = json.load(map_)
+
+        current_map["actual_map"] = "basic"
+
+        with open("map storage/actual_map.json", "w") as map_:
+            json.dump(current_map, map_, indent=2)
+
+        update_map = True
         self.kill()
 
     def update(self, move, click, pos):
