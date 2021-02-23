@@ -105,13 +105,13 @@ class MainDisplay:
             map_number = json.load(map_)
 
         preview = pyautogui.screenshot()
-        preview.save(r'map storage\New{}.png'.format(map_number["map_number"] + 1))
+        preview.save(r'./map storage/New{}.png'.format(map_number["map_number"] + 1))
 
         name = "map{}".format(len(self.all_maps["all maps"]) + 1)
         map_package = {"map_ground": self.map_ground_empty,
                        "map_decorative": self.map_decorative_empty,
                        "map_collision": self.collision_map,
-                       "path_preview": 'map storage/New{}.png'.format(map_number["map_number"] + 1)
+                       "path_preview": './map storage/New{}.png'.format(map_number["map_number"] + 1)
                        }
 
         self.all_maps["all maps"][name] = map_package
