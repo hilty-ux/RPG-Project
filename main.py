@@ -1,11 +1,14 @@
 import pygame
 from sys import platform
+import json
 
 import Player
 import text
 import Decoration_Classes as Dc
 import Ground_Classes as Gr
 import Ennemies as En
+import Map_Editor as Me
+import map_loader as ml
 
 
 class Game:
@@ -13,8 +16,11 @@ class Game:
     def __init__(self, screen):
 
         self.screen = screen
-        self.beginning = True
-        self.running = True
+        self.game = True
+        self.menu = True
+        self.running = False
+        self.map_editor = False
+        self.map_loader = False
         self.inside_house = False
 
         self.width = self.screen.get_width()
@@ -53,7 +59,7 @@ class Game:
 
         # crée les maps, sous formes de listes de listes contenant pour chaque chiffre une information sur le bloc,
         # il y a différentes listes pour représenter différentes "couches", d'abord le sol, puis les objets decoratifs
-        self.map_ground = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        self.map_ground_default = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                            [0, 0, 0, 0, 4, 6, 6, 6, 6, 6, 8, 0, 0, 0, 0, 0, 0, 0, 0],
                            [0, 0, 0, 0, 1, 5, 7, 7, 7, 7, 9, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -68,7 +74,7 @@ class Game:
         # pour rendre le mouvement plus fluide, la classe du joueur est deux fois plus importantes que celle de
         # l'environnement, pour que le joueur se déplace de demi-cases mais que l'environnement soit constitué de
         # cases à part entière
-        self.map_player = [
+        self.map_player_default = [
          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0],
          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0],
          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0],
@@ -91,7 +97,7 @@ class Game:
          [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
          [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
-        self.map_others = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0],
+        self.map_others_default = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0],
                            [0, 6, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0],
                            [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 0],
                            [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0],
@@ -103,7 +109,7 @@ class Game:
                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 6, 0, 0],
                            [0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
-        self.map_hostile = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0],
+        self.map_hostile_default = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0],
                             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 1, 1, 2, 0],
                             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 1, 1, 2, 0],
                             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 1, 1, 2, 0],
@@ -116,7 +122,7 @@ class Game:
                             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
         # initialise les variables relatives au joueur ; sa direction de départ, ses statuts ainsi que sa classe
-        self.pl = Player.Player(self.screen, self.map_player)
+        self.pl = Player.Player(self.screen, self.map_player_default)
         self.direction = "right"
         self.moving = False
         self.attacking = False
@@ -168,7 +174,7 @@ class Game:
         self.add_wall = lambda x, y: self.inside_house_group_ground.add(Gr.InsideWall((x, y)))
 
         # partie du monstre
-        self.mon = En.Monster(self.screen, self.map_hostile)
+        self.mon = En.Monster(self.screen, self.map_hostile_default)
         self.monster_group = pygame.sprite.Group()
         self.monster_group.add(self.mon)
 
@@ -200,6 +206,88 @@ class Game:
         self.flou = pygame.Surface((self.screen.get_width(), self.screen.get_height()))
         self.flou.fill((255, 255, 255))
         self.flou.set_alpha(200)
+
+        self.W = self.screen.get_width()
+        self.H = self.screen.get_height()
+
+        # menu
+        self.button_list = [text.CreateText("Play", 75, (self.W // 2, self.H // 2 - 150)),
+                            text.CreateText("Map Editor", 75, (self.W // 2, self.H // 2 - 50)),
+                            text.CreateText("Load Map", 75, (self.W // 2, self.H // 2 + 50)),
+                            text.CreateText("Quit", 75, (self.W // 2, self.H // 2 + 150))]
+        self.actual_selection = 0
+
+        # map editor
+        self.MapEditor = Me.MainDisplay(self.screen)
+        self.group_pop_up_saving = pygame.sprite.Group()
+        self.add_pop_up_saving = lambda: self.group_pop_up_saving.add(text.SavingAnim((25, 25)))
+
+        # map loader
+        self.MapLoader = ml.MainDisplay(self.screen)
+
+        # LOADING MAP
+        with open("map storage/actual_map.json") as m:
+            self.chosen_map = json.load(m)
+
+        self.chosen_map = self.chosen_map["actual_map"]
+
+        if self.chosen_map != "basic":
+            with open("map storage/map.json") as map_:
+                self.total_maps = json.load(map_)
+
+            self.total_maps = self.total_maps["all maps"][self.chosen_map]
+            self.map_player = self.total_maps["map_collision"]
+            self.map_ground = self.total_maps["map_ground"]
+            self.map_others = self.total_maps["map_decorative"]
+        else:
+            self.map_ground = self.map_ground_default
+            self.map_player = self.map_player_default
+            self.map_others = self.map_others_default
+
+        self.pl = Player.Player(self.screen, self.map_player)
+
+    def update_map(self, basic):
+
+        self.ground_group.empty()
+        self.decorative_group_tree.empty()
+        self.decorative_group_others.empty()
+        self.house_group.empty()
+
+        if basic == "basic":
+            with open("map storage/actual_map.json") as actual_map:
+                current_map = json.load(actual_map)
+
+            current_map["actual_map"] = "basic"
+
+            with open("map storage/actual_map.json", "w") as actual_map:
+                json.dump(current_map, actual_map, indent=2)
+
+        # LOADING MAP
+        with open("map storage/actual_map.json") as m:
+            self.chosen_map = json.load(m)
+
+        self.chosen_map = self.chosen_map["actual_map"]
+
+        if self.chosen_map != "basic":
+            with open("map storage/map.json") as map_:
+                self.total_maps = json.load(map_)
+
+            self.total_maps = self.total_maps["all maps"][self.chosen_map]
+            self.map_ground = self.total_maps["map_ground"]
+            self.map_player = self.total_maps["map_collision"]
+            self.map_others = self.total_maps["map_decorative"]
+
+            self.show_map()
+            self.show_decorative()
+        else:
+            self.map_ground = self.map_ground_default
+            self.map_player = self.map_player_default
+            self.map_others = self.map_others_default
+
+            self.show_map()
+            self.show_decorative()
+
+        self.pl = Player.Player(self.screen, self.map_player)
 
     def show_map(self):
 
@@ -276,6 +364,17 @@ class Game:
             if self.pl.rect.colliderect(sprite.rect):
                 sprite.kill()
 
+    def find_last(self, group):
+        last = None
+        for sprites in group:
+
+            last = sprites
+        return last
+
+    def find_first(self, group):
+        for sprites in group:
+            return sprites
+
     def main_loop(self):
 
         # barre de chargement
@@ -290,100 +389,215 @@ class Game:
 
         self.show_inside_house()
 
-        while self.running:
+        while self.game:
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.running = False
-                if event.type == pygame.KEYDOWN:
-                    self.pressed[event.key] = True
-                    self.moving = True
-                    if event.key == pygame.K_ESCAPE:
-                        self.running = False
-                if event.type == pygame.KEYUP:
-                    self.pressed[event.key] = False
-                    self.moving = False
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1 and not self.attacking:
-                        self.attacking = True
+            while self.menu:
 
-            # limite le mouvement du joueur à 1 toutes les 50 ms
-            if self.current_time - self.delay_movement > 50:
-                # reset le délai
-                self.delay_movement = self.current_time
-                # si le joueur n'est pas en train d'attaquer, le fait bouger
-                if not self.attacking:
-                    if self.pressed.get(pygame.K_z):
-                        self.pl.move("up", self.inside_house_map_player, self.inside_house)
-                        self.direction = "back"
-                    if self.pressed.get(pygame.K_s):
-                        self.pl.move("down", self.inside_house_map_player, self.inside_house)
-                        self.direction = "front"
-                    if self.pressed.get(pygame.K_q):
-                        self.pl.move("left", self.inside_house_map_player, self.inside_house)
-                        self.direction = "left"
-                    if self.pressed.get(pygame.K_d):
-                        self.pl.move("right", self.inside_house_map_player, self.inside_house)
-                        self.direction = "right"
+                if ml.update_map:
+                    self.update_map("else")
+                    ml.update_map = False
 
-            # dessine/met à jour tous les composants du jeu (sol, joueur, décoration...)
-            self.ground_group.draw(self.screen)
-            self.decorative_group_others.draw(self.screen)
-            if self.pl.current_pos[1] > 11:
-                self.house_group.draw(self.screen)
-                if self.map_player[self.pl.current_pos[1]][self.pl.current_pos[0]] == 9 or\
-                        self.map_player[self.pl.current_pos[1]][self.pl.current_pos[0]] == 8:
-                    pygame.draw.polygon(self.screen, (88, 41, 0), [(780, 688), (835, 689), (835, 751), (779, 752)])
-            self.monster_group.draw(self.screen)
-            self.monster_group.update(self.pl.current_pos)
-            self.pl.update(self.inside_house)
-            self.pl.move_animation(self.direction, self.moving)
-            if self.pl.current_pos[1] <= 11:
-                self.house_group.draw(self.screen)
-            self.decorative_group_tree.draw(self.screen)
-            # anime le joueur si il est en train d'attaquer
-            if self.attacking:
-                self.pl.attack(self.direction)
-                if self.pl.index_animation_att == 2:
-                    if 35 > self.pl.current_pos[0] > 25 and \
-                            0 < self.pl.current_pos[1] < 10:
-                        self.find_collision()
-                if self.pl.attack(self.direction) == "end":
-                    self.attacking = False
-                    self.pl.index_animation_att = 0
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        self.menu = False
+                        self.game = False
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_UP and self.actual_selection > 0:
+                            self.actual_selection -= 1
+                        if event.key == pygame.K_DOWN and self.actual_selection < 3:
+                            self.actual_selection += 1
+                        if event.key == 13:
+                            if self.actual_selection == 0:
+                                self.menu = False
+                                self.running = True
+                            elif self.actual_selection == 1:
+                                self.menu = False
+                                self.map_editor = True
+                            elif self.actual_selection == 2:
+                                self.menu = False
+                                self.map_loader = True
+                            elif self.actual_selection == 3:
+                                self.menu = False
+                                self.game = False
 
-            if self.map_player[self.pl.current_pos[1]][self.pl.current_pos[0]] == 8 and not self.inside_house:
-                self.inside_house = True
-                self.direction = "right"
-
-            if self.inside_house:
+                self.ground_group.draw(self.screen)
+                self.decorative_group_others.draw(self.screen)
+                self.decorative_group_tree.draw(self.screen)
                 self.screen.blit(self.flou, (0, 0))
-                pygame.draw.rect(self.screen, (0, 0, 0), [250, 250, 800, 450])
-                self.inside_house_group_ground.draw(self.screen)
-                self.inside_house_group_decorative.draw(self.screen)
+
+                rect_choice = pygame.Rect(100, 100, 350, 70)
+                rect_choice.center = self.button_list[self.actual_selection].rect.center
+                pygame.draw.rect(self.screen, (255, 0, 0), rect_choice)
+
+                for i in self.button_list:
+                    self.screen.blit(i.text, i.rect)
+
+                pygame.mouse.set_visible(False)
+                pygame.display.flip()
+
+            while self.map_editor:
+
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        self.game = False
+                        self.map_editor = False
+                    if event.type == pygame.KEYDOWN:
+
+                        if event.key == pygame.K_ESCAPE:
+                            self.map_editor = False
+                            self.menu = True
+                        if event.key == pygame.K_LEFT and self.MapEditor.mb.actual_selection > 0:
+                            self.MapEditor.mb.actual_selection -= 1
+                        if event.key == pygame.K_RIGHT and \
+                                self.MapEditor.mb.actual_selection < len(self.MapEditor.mb.bar_bot_items_build) - 1:
+                            self.MapEditor.mb.actual_selection += 1
+                        if event.key == pygame.K_s and pygame.key.get_mods() & pygame.KMOD_LCTRL:
+                            self.add_pop_up_saving()
+                            self.MapEditor.show_bar = False
+                            self.MapEditor.main_display()
+                            self.MapEditor.save_map()
+                            self.MapEditor.show_bar = True
+
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if event.button == 1:
+                            # transforme le tuple en liste pour pouvoir le modifier
+                            self.MapEditor.click([event.pos[0], event.pos[1]])
+
+                self.screen.fill((0, 0, 0))
+
+                self.MapEditor.main_display()
+                self.group_pop_up_saving.draw(self.screen)
+                self.group_pop_up_saving.update()
+
+                pygame.mouse.set_visible(True)
+                pygame.display.flip()
+
+            while self.map_loader:
+
+                for event in pygame.event.get():
+
+                    if event.type == pygame.QUIT:
+                        self.map_loader = False
+                        self.running = False
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_ESCAPE:
+                            self.map_loader = False
+                            self.menu = True
+
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if event.button == 4:
+                            if self.find_first(self.MapLoader.maps_group).rect.y < 25:
+                                self.MapLoader.maps_group.update("down", False, pygame.mouse.get_pos())
+                        if event.button == 5:
+                            if self.find_last(self.MapLoader.maps_group).rect.y > self.H - 300:
+                                self.MapLoader.maps_group.update("up", False, pygame.mouse.get_pos())
+                        if event.button == 1:
+                            self.MapLoader.maps_group.update(None, True, pygame.mouse.get_pos())
+                            if self.MapLoader.button_restore_default_surf_rect.collidepoint(event.pos):
+                                self.update_map("basic")
+
+                self.MapLoader.maps_group.update(None, False, pygame.mouse.get_pos())
+                self.MapLoader.display()
+                pygame.mouse.set_visible(True)
+                pygame.display.flip()
+
+            while self.running:
+
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        self.running = False
+                        self.game = False
+                    if event.type == pygame.KEYDOWN:
+                        self.pressed[event.key] = True
+                        self.moving = True
+                        if event.key == pygame.K_ESCAPE:
+                            self.running = False
+                            self.menu = True
+                    if event.type == pygame.KEYUP:
+                        self.pressed[event.key] = False
+                        self.moving = False
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if event.button == 1 and not self.attacking:
+                            self.attacking = True
+
+                # limite le mouvement du joueur à 1 toutes les 50 ms
+                if self.current_time - self.delay_movement > 50:
+                    # reset le délai
+                    self.delay_movement = self.current_time
+                    # si le joueur n'est pas en train d'attaquer, le fait bouger
+                    if not self.attacking:
+                        if self.pressed.get(pygame.K_z):
+                            self.pl.move("up", self.inside_house_map_player, self.inside_house)
+                            self.direction = "back"
+                        if self.pressed.get(pygame.K_s):
+                            self.pl.move("down", self.inside_house_map_player, self.inside_house)
+                            self.direction = "front"
+                        if self.pressed.get(pygame.K_q):
+                            self.pl.move("left", self.inside_house_map_player, self.inside_house)
+                            self.direction = "left"
+                        if self.pressed.get(pygame.K_d):
+                            self.pl.move("right", self.inside_house_map_player, self.inside_house)
+                            self.direction = "right"
+
+                # dessine/met à jour tous les composants du jeu (sol, joueur, décoration...)
+                self.ground_group.draw(self.screen)
+                self.decorative_group_others.draw(self.screen)
+                if self.pl.current_pos[1] > 11:
+                    self.house_group.draw(self.screen)
+                    if self.map_player[self.pl.current_pos[1]][self.pl.current_pos[0]] == 9 or\
+                            self.map_player[self.pl.current_pos[1]][self.pl.current_pos[0]] == 8:
+                        pygame.draw.polygon(self.screen, (88, 41, 0), [(780, 688), (835, 689), (835, 751), (779, 752)])
+                if self.chosen_map == "basic":
+                    self.monster_group.draw(self.screen)
+                    self.monster_group.update(self.pl.current_pos)
                 self.pl.update(self.inside_house)
-                index = [0, 0]
-                if self.pl.inside_pos[0] - 1 < 0:
-                    index[0] = 0
-                else:
-                    index[0] = self.pl.inside_pos[0] - 1
-                if self.pl.inside_pos[1] - 1 < 0:
-                    index[1] = 0
-                else:
-                    index[1] = self.pl.inside_pos[1] - 1
+                self.pl.move_animation(self.direction, self.moving)
+                if self.pl.current_pos[1] <= 11:
+                    self.house_group.draw(self.screen)
+                self.decorative_group_tree.draw(self.screen)
+                # anime le joueur si il est en train d'attaquer
+                if self.attacking:
+                    self.pl.attack(self.direction)
+                    if self.pl.index_animation_att == 2:
+                        if 35 > self.pl.current_pos[0] > 25 and \
+                                0 < self.pl.current_pos[1] < 10:
+                            self.find_collision()
+                    if self.pl.attack(self.direction) == "end":
+                        self.attacking = False
+                        self.pl.index_animation_att = 0
 
-                if self.inside_house_map_player[index[1]][index[0]] == 9:
-                    self.inside_house = False
-                    self.pl.current_pos = [30, 2]
-                    self.pl.inside_pos = [8, 8]
+                if self.map_player[self.pl.current_pos[1]][self.pl.current_pos[0]] == 8 and not self.inside_house:
+                    self.inside_house = True
+                    self.direction = "right"
 
-            """if len(self.monster_group) == 0:
-                self.running = False"""
+                if self.inside_house:
+                    self.screen.blit(self.flou, (0, 0))
+                    pygame.draw.rect(self.screen, (0, 0, 0), [250, 250, 800, 450])
+                    self.inside_house_group_ground.draw(self.screen)
+                    self.inside_house_group_decorative.draw(self.screen)
+                    self.pl.update(self.inside_house)
+                    index = [0, 0]
+                    if self.pl.inside_pos[0] - 1 < 0:
+                        index[0] = 0
+                    else:
+                        index[0] = self.pl.inside_pos[0] - 1
+                    if self.pl.inside_pos[1] - 1 < 0:
+                        index[1] = 0
+                    else:
+                        index[1] = self.pl.inside_pos[1] - 1
 
-            pygame.mouse.set_visible(False)  # rends invisible la souris
-            self.current_time = pygame.time.get_ticks()  # met à jour le temps
-            pygame.display.flip()  # met à jour l'écran
-            self.clock.tick(60)  # met les FPS à 60
+                    if self.inside_house_map_player[index[1]][index[0]] == 9:
+                        self.inside_house = False
+                        self.pl.current_pos = [30, 2]
+                        self.pl.inside_pos = [8, 8]
+
+                """if len(self.monster_group) == 0:
+                    self.running = False"""
+
+                pygame.mouse.set_visible(False)  # rends invisible la souris
+                self.current_time = pygame.time.get_ticks()  # met à jour le temps
+                pygame.display.flip()  # met à jour l'écran
+                self.clock.tick(60)  # met les FPS à 60
 
 
 # si raspberry => pygame.display.set_mode((1900, 1000))
