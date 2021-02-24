@@ -12,6 +12,10 @@ class BlueTree(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = coordinates
 
+    def update(self, resize):
+        if resize:
+            self.image = pg.transform.scale(self.image, (79, 110))
+
 
 class RedTree(pg.sprite.Sprite):
 
@@ -23,6 +27,10 @@ class RedTree(pg.sprite.Sprite):
 
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = coordinates
+
+    def update(self, resize):
+        if resize:
+            self.image = pg.transform.scale(self.image, (79, 110))
 
 
 class Fern(pg.sprite.Sprite):
@@ -36,6 +44,10 @@ class Fern(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = coordinates
 
+    def update(self, resize):
+        if resize:
+            self.image = pg.transform.scale(self.image, (52, 28))
+
 
 class Lake(pg.sprite.Sprite):
 
@@ -47,6 +59,10 @@ class Lake(pg.sprite.Sprite):
 
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = coordinates
+
+    def update(self, resize):
+        if resize:
+            self.image = pg.transform.scale(self.image, (100, 100))
 
 
 class House(pg.sprite.Sprite):
@@ -60,6 +76,10 @@ class House(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = coordinates
 
+    def update(self, resize):
+        if resize:
+            self.image = pg.transform.scale(self.image, (84, 105))
+
 
 class Rock(pg.sprite.Sprite):
 
@@ -71,6 +91,10 @@ class Rock(pg.sprite.Sprite):
 
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = coordinates
+
+    def update(self, resize):
+        if resize:
+            self.image = pg.transform.scale(self.image, (63, 45))
 
 
 class Barrier(pg.sprite.Sprite):
@@ -84,6 +108,10 @@ class Barrier(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = coordinates
 
+    def update(self, resize):
+        if resize:
+            self.image = pg.transform.scale(self.image, (100, 100))
+
 
 class CaveStair(pg.sprite.Sprite):
 
@@ -95,6 +123,10 @@ class CaveStair(pg.sprite.Sprite):
 
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = coordinates
+
+    def update(self, resize):
+        if resize:
+            self.image = pg.transform.scale(self.image, (100, 100))
 
 
 class CaveStair2(pg.sprite.Sprite):
@@ -108,6 +140,10 @@ class CaveStair2(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = coordinates
 
+    def update(self, resize):
+        if resize:
+            self.image = pg.transform.scale(self.image, (100, 100))
+
 
 class Column(pg.sprite.Sprite):
 
@@ -120,6 +156,10 @@ class Column(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = coordinates
 
+    def update(self, resize):
+        if resize:
+            self.image = pg.transform.scale(self.image, (50, 100))
+
 
 class Skull(pg.sprite.Sprite):
 
@@ -131,3 +171,7 @@ class Skull(pg.sprite.Sprite):
 
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = coordinates
+
+    def update(self, resize):
+        if resize:
+            self.image = pg.transform.scale(self.image, (50, 50))

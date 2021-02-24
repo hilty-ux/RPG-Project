@@ -151,9 +151,14 @@ class Game:
         self.add_house = lambda x, y: self.house_group.add(Dc.House((x, y)))
         self.add_rock = lambda x, y: self.decorative_group_others.add(Dc.Rock((x, y)))
         self.add_barrier = lambda x, y: self.decorative_group_others.add(Dc.Barrier((x, y)))
+        self.add_stairs1 = lambda x, y: self.decorative_group_others.add(Dc.CaveStair((x, y)))
+        self.add_stairs2 = lambda x, y: self.decorative_group_others.add(Dc.CaveStair2((x, y)))
+        self.add_column = lambda x, y: self.decorative_group_others.add(Dc.Column((x, y)))
+        self.add_skull = lambda x, y: self.decorative_group_others.add(Dc.Skull((x, y)))
 
         self.ground_group = pygame.sprite.Group()
         self.add_grass = lambda x, y: self.ground_group.add(Gr.Grass((x, y)))
+        self.add_basic_road = lambda x, y: self.ground_group.add(Gr.BasicRoad((x, y)))
         self.add_road_left = lambda x, y: self.ground_group.add(Gr.RoadLeft((x, y)))
         self.add_road_right = lambda x, y: self.ground_group.add(Gr.RoadRight((x, y)))
         self.add_road_bot = lambda x, y: self.ground_group.add(Gr.RoadBot((x, y)))
@@ -162,6 +167,12 @@ class Game:
         self.add_road_bot_left_corner_empty = lambda x, y: self.ground_group.add(Gr.RoadBotRightEmpty((x, y)))
         self.add_road_bot_right_corner_full = lambda x, y: self.ground_group.add(Gr.RoadBotRightFull((x, y)))
         self.add_road_top_right_corner_full = lambda x, y: self.ground_group.add(Gr.RoadTopRightFull((x, y)))
+        self.add_road_bot_left_corner_full = lambda x, y: self.ground_group.add(Gr.RoadBotLeftFull((x, y)))
+        self.add_road_top_left_corner_empty = lambda x, y: self.ground_group.add(Gr.RoadTopLeftEmpty((x, y)))
+        self.add_road_top_right_corner_empty = lambda x, y: self.ground_group.add(Gr.RoadTopRightEmpty((x, y)))
+        self.add_road_bot_right_corner_empty = lambda x, y: self.ground_group.add(Gr.RoadBotRightEmpty((x, y)))
+        self.add_ground_inside_wall = lambda x, y: self.ground_group.add(Gr.InsideWall((x, y)))
+        self.add_ground_inside_ground = lambda x, y: self.ground_group.add(Gr.InsideGround((x, y)))
 
         self.inside_house_group_decorative = pygame.sprite.Group()
         self.add_stairs = lambda x, y: self.inside_house_group_decorative.add(Dc.CaveStair((x, y)))
@@ -314,6 +325,20 @@ class Game:
                     self.add_road_top_right_corner_full(cell * 100, row * 100)
                 elif self.map_ground[row][cell] == 9:
                     self.add_road_bot_right_corner_full(cell * 100, row * 100)
+                elif self.map_ground[row][cell] == 10:
+                    self.add_road_bot_left_corner_full(cell * 100, row * 100)
+                elif self.map_ground[row][cell] == 11:
+                    self.add_road_bot_right_corner_empty(cell * 100, row * 100)
+                elif self.map_ground[row][cell] == 12:
+                    self.add_road_top_right_corner_empty(cell * 100, row * 100)
+                elif self.map_ground[row][cell] == 13:
+                    self.add_road_top_left_corner_empty(cell * 100, row * 100)
+                elif self.map_ground[row][cell] == 14:
+                    self.add_basic_road(cell * 100, row * 100)
+                elif self.map_ground[row][cell] == 16:
+                    self.add_ground_inside_wall(cell * 100, row * 100)
+                elif self.map_ground[row][cell] == 15:
+                    self.add_ground_inside_ground(cell * 100, row * 100)
 
     def show_decorative(self):
 
@@ -335,6 +360,14 @@ class Game:
                     self.add_rock(cell * 100, row * 100)
                 elif self.map_others[row][cell] == 7:
                     self.add_barrier(cell * 100, row * 100)
+                elif self.map_others[row][cell] == 8:
+                    self.add_stairs1(cell * 100, row * 100)
+                elif self.map_others[row][cell] == 9:
+                    self.add_stairs2(cell * 100, row * 100)
+                elif self.map_others[row][cell] == 10:
+                    self.add_column(cell * 100, row * 100)
+                elif self.map_others[row][cell] == 11:
+                    self.add_skull(cell * 100, row * 100)
                 else:
                     pass
 
@@ -448,17 +481,44 @@ class Game:
                         if event.key == pygame.K_ESCAPE:
                             self.map_editor = False
                             self.menu = True
-                        if event.key == pygame.K_LEFT and self.MapEditor.mb.actual_selection > 0:
-                            self.MapEditor.mb.actual_selection -= 1
-                        if event.key == pygame.K_RIGHT and \
-                                self.MapEditor.mb.actual_selection < len(self.MapEditor.mb.bar_bot_items_build) - 1:
-                            self.MapEditor.mb.actual_selection += 1
+                        if self.MapEditor.big_tab == "build":
+                            if event.key == pygame.K_LEFT and self.MapEditor.mb.actual_selection > 0:
+                                self.MapEditor.mb.actual_selection -= 1
+                            if event.key == pygame.K_RIGHT and self.MapEditor.mb.onglet == "grass" and\
+                                    self.MapEditor.mb.actual_selection < 0:
+                                self.MapEditor.mb.actual_selection += 1
+                            if event.key == pygame.K_RIGHT and self.MapEditor.mb.onglet == "road" and\
+                                    self.MapEditor.mb.actual_selection < 12:
+                                self.MapEditor.mb.actual_selection += 1
+                            if event.key == pygame.K_RIGHT and self.MapEditor.mb.onglet == "inside" and\
+                                    self.MapEditor.mb.actual_selection < 1:
+                                self.MapEditor.mb.actual_selection += 1
+                            if event.key == pygame.K_DOWN and self.MapEditor.mb.onglet != "inside":
+                                self.MapEditor.mb.onglet = \
+                                    self.MapEditor.mb.all_onglets[self.MapEditor.mb.all_onglets.index(self.MapEditor.mb.onglet)+1]
+                                self.MapEditor.mb.actual_selection = 0
+                            if event.key == pygame.K_UP and self.MapEditor.mb.onglet != "grass":
+                                self.MapEditor.mb.onglet = \
+                                    self.MapEditor.mb.all_onglets[self.MapEditor.mb.all_onglets.index(self.MapEditor.mb.onglet)-1]
+                                self.MapEditor.mb.actual_selection = 0
+                        elif self.MapEditor.big_tab == "decorative":
+                            if event.key == pygame.K_LEFT and self.MapEditor.mbd.current_selection > 0:
+                                self.MapEditor.mbd.current_selection -= 1
+                            if event.key == pygame.K_RIGHT and self.MapEditor.mbd.current_selection < 10:
+                                self.MapEditor.mbd.current_selection += 1
                         if event.key == pygame.K_s and pygame.key.get_mods() & pygame.KMOD_LCTRL:
                             self.add_pop_up_saving()
                             self.MapEditor.show_bar = False
                             self.MapEditor.main_display()
                             self.MapEditor.save_map()
                             self.MapEditor.show_bar = True
+
+                        if event.key == pygame.K_b and self.MapEditor.big_tab != "build":
+                            self.MapEditor.big_tab = "build"
+                        if event.key == pygame.K_d and self.MapEditor.big_tab != "decorative":
+                            self.MapEditor.big_tab = "decorative"
+                        if event.key == pygame.K_c and self.MapEditor.big_tab != "collision":
+                            self.MapEditor.big_tab = "collision"
 
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         if event.button == 1:
