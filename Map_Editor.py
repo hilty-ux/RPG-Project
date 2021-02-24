@@ -283,16 +283,21 @@ class MainDisplay:
         if self.show_bar:
             if self.big_tab == "build":
                 self.ground_group.draw(self.screen)
+                self.decorative_group_others.draw(self.screen)
+                self.decorative_group_tree.draw(self.screen)
+                self.house_group.draw(self.screen)
                 self.mb.display_bar_bot()
             elif self.big_tab == "decorative":
                 self.ground_group.draw(self.screen)
                 self.decorative_group_others.draw(self.screen)
                 self.decorative_group_tree.draw(self.screen)
+                self.house_group.draw(self.screen)
                 self.mbd.main_display()
             elif self.big_tab == "collision":
                 self.ground_group.draw(self.screen)
                 self.decorative_group_others.draw(self.screen)
                 self.decorative_group_tree.draw(self.screen)
+                self.house_group.draw(self.screen)
                 self.mbc.main_display()
                 self.collision_group.draw(self.screen)
 
