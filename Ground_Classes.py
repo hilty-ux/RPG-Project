@@ -192,3 +192,16 @@ class InsideWall(pg.sprite.Sprite):
 
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = coordinates
+
+
+class CollisionModel(pg.sprite.Sprite):
+
+    def __init__(self, coordinates):
+        super().__init__()
+
+        self.image = pg.Surface((50, 50))
+        self.image.fill((255, 0, 0))
+        self.image.set_alpha(75)
+
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = coordinates

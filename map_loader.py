@@ -67,6 +67,16 @@ def play_map(name):
 update_map = False
 
 
+def edit_map(name):
+    with open("map storage/actual_map.json") as actual_map:
+        current_map = json.load(actual_map)
+
+    current_map["actual_map_editing"] = name
+
+    with open("map storage/actual_map.json", "w") as actual_map:
+        json.dump(current_map, actual_map, indent=2)
+
+
 class CreateFile(pygame.sprite.Sprite):
 
     def __init__(self, screen, path, name, index):
@@ -174,7 +184,7 @@ class CreateFile(pygame.sprite.Sprite):
                 play_map(self.name)
                 update_map = True
             elif self.shining_rect[1].collidepoint((pos[0] - self.rect.x, pos[1] - self.rect.y)):
-                print("edit")
+                edit_map(self.name)
 
             if self.button_delete_surf_rect.collidepoint((pos[0] - self.rect.x, pos[1] - self.rect.y)):
                 self.delete()

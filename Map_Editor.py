@@ -50,28 +50,28 @@ class MainDisplay:
                                self.add_road_bot_left_corner_empty]
         self.selection_inside = [self.add_inside_ground, self.add_inside_wall]
 
-        self.map_ground_empty = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-        self.map_decorative_empty = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+        self.map_ground_empty = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+        self.map_decorative_empty = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
         self.collision_map = [
          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -102,6 +102,9 @@ class MainDisplay:
         with open("map storage/map.json") as m:
             self.all_maps = json.load(m)
 
+        with open("map storage/actual_map.json") as actual_map:
+            self.current_map = json.load(actual_map)
+
         self.big_tab = "build"
 
         self.decorative_group_tree = pygame.sprite.Group()
@@ -126,8 +129,100 @@ class MainDisplay:
 
         self.trad_selection_decorative = [1, 3, 2, 4, 5, 6, 7, 8, 9, 10, 11]
 
+        self.collision_group = pygame.sprite.Group()
+        self.add_collision_model = lambda x, y: self.collision_group.add(Gr.CollisionModel((x, y)))
+
+        if self.current_map["actual_map_editing"] != "None":
+            self.map_to_edit = self.current_map["actual_map_editing"]
+            self.load_map_for_edit()
+
+    def update_edit(self):
+        with open("map storage/actual_map.json") as actual_map:
+            self.current_map = json.load(actual_map)
+
+        if self.current_map["actual_map_editing"] != "None":
+            self.map_to_edit = self.current_map["actual_map_editing"]
+            self.load_map_for_edit()
+
+    def load_map_for_edit(self):
+        current_map_to_edit = self.all_maps["all maps"][self.map_to_edit]
+        self.map_ground_empty = current_map_to_edit["map_ground"]
+        self.map_decorative_empty = current_map_to_edit["map_decorative"]
+        self.collision_map = current_map_to_edit["map_collision"]
+
+        for row in range(len(self.map_ground_empty)):
+            for cell in range(len(self.map_ground_empty[row])):
+                if self.map_ground_empty[row][cell] == 0:
+                    self.add_grass(cell * 100, row * 100)
+                elif self.map_ground_empty[row][cell] == 1:
+                    self.add_road_left(cell * 100, row * 100)
+                elif self.map_ground_empty[row][cell] == 2:
+                    self.add_road_right(cell * 100, row * 100)
+                elif self.map_ground_empty[row][cell] == 4:
+                    self.add_road_top_left_corner_full(cell * 100, row * 100)
+                elif self.map_ground_empty[row][cell] == 5:
+                    self.add_road_bot_left_corner_empty(cell * 100, row * 100)
+                elif self.map_ground_empty[row][cell] == 6:
+                    self.add_road_top(cell * 100, row * 100)
+                elif self.map_ground_empty[row][cell] == 7:
+                    self.add_road_bot(cell * 100, row * 100)
+                elif self.map_ground_empty[row][cell] == 8:
+                    self.add_road_top_right_corner_full(cell * 100, row * 100)
+                elif self.map_ground_empty[row][cell] == 9:
+                    self.add_road_bot_right_corner_full(cell * 100, row * 100)
+                elif self.map_ground_empty[row][cell] == 10:
+                    self.add_road_bot_left_corner_full(cell * 100, row * 100)
+                elif self.map_ground_empty[row][cell] == 11:
+                    self.add_road_bot_right_corner_empty(cell * 100, row * 100)
+                elif self.map_ground_empty[row][cell] == 12:
+                    self.add_road_top_right_corner_empty(cell * 100, row * 100)
+                elif self.map_ground_empty[row][cell] == 13:
+                    self.add_road_top_left_corner_empty(cell * 100, row * 100)
+                elif self.map_ground_empty[row][cell] == 14:
+                    self.add_basic_road(cell * 100, row * 100)
+                elif self.map_ground_empty[row][cell] == 16:
+                    self.add_inside_wall(cell * 100, row * 100)
+                elif self.map_ground_empty[row][cell] == 15:
+                    self.add_inside_ground(cell * 100, row * 100)
+
+        for row in range(len(self.map_decorative_empty)):
+            for cell in range(len(self.map_decorative_empty[row])):
+                if self.map_decorative_empty[row][cell] == 1:
+                    self.add_blue_tree(cell * 100, row * 100)
+                elif self.map_decorative_empty[row][cell] == 2:
+                    self.add_fern(cell * 100, row * 100)
+                elif self.map_decorative_empty[row][cell] == 3:
+                    self.add_red_tree(cell * 100, row * 100)
+                elif self.map_decorative_empty[row][cell] == 4:
+                    self.add_lake(cell * 100, row * 100)
+                elif self.map_decorative_empty[row][cell] == 5:
+                    self.add_house(cell * 100, row * 100)
+                elif self.map_decorative_empty[row][cell] == 6:
+                    self.add_rock(cell * 100, row * 100)
+                elif self.map_decorative_empty[row][cell] == 7:
+                    self.add_barrier(cell * 100, row * 100)
+                elif self.map_decorative_empty[row][cell] == 8:
+                    self.add_stairs1(cell * 100, row * 100)
+                elif self.map_decorative_empty[row][cell] == 9:
+                    self.add_stairs2(cell * 100, row * 100)
+                elif self.map_decorative_empty[row][cell] == 10:
+                    self.add_column(cell * 100, row * 100)
+                elif self.map_decorative_empty[row][cell] == 11:
+                    self.add_skull(cell * 100, row * 100)
+                else:
+                    pass
+
+        for row in range(len(self.collision_map)):
+            for cell in range(len(self.collision_map[row])):
+                if self.collision_map[row][cell] == 3:
+                    self.add_collision_model(cell*50, row*50)
+
     def click(self, pos):
         # arrondi la position à la centaine du dessous
+        pos_coll = [0, 0]
+        pos_coll[0] = math.floor(pygame.mouse.get_pos()[0] / 50) * 50
+        pos_coll[1] = math.floor(pygame.mouse.get_pos()[1] / 50) * 50
+
         pos[0] = math.floor(pos[0] / 100) * 100
         pos[1] = math.floor(pos[1] / 100) * 100
 
@@ -148,6 +243,18 @@ class MainDisplay:
             self.map_decorative_empty[math.floor(pos[1] / 100)][math.floor(pos[0] / 100)] = \
                 self.trad_selection_decorative[self.mbd.current_selection]
             self.decorative_selection[self.mbd.current_selection](pos[0], pos[1])
+        elif self.big_tab == "collision":
+            if self.collision_map[math.floor(pos_coll[1] / 50)][math.floor(pos_coll[0] / 50)] == 0:
+                self.collision_map[math.floor(pos_coll[1] / 50)][math.floor(pos_coll[0] / 50)] = 3
+                self.add_collision_model(pos_coll[0], pos_coll[1])
+            else:
+                self.collision_map[math.floor(pos_coll[1] / 50)][math.floor(pos_coll[0] / 50)] = 0
+                for sprite in self.collision_group:
+                    if sprite.rect.collidepoint((pos_coll[0], pos_coll[1])):
+                        self.collision_group.remove(sprite)
+
+        print(pygame.mouse.get_pos())
+        print(pos_coll)
 
     def save_map(self):
         with open("map storage/actual_map.json") as map_:
@@ -187,6 +294,7 @@ class MainDisplay:
                 self.decorative_group_others.draw(self.screen)
                 self.decorative_group_tree.draw(self.screen)
                 self.mbc.main_display()
+                self.collision_group.draw(self.screen)
 
 
 class MenuBarCollision:
@@ -225,7 +333,7 @@ class MenuBarCollision:
             pygame.draw.line(self.surf_line, (255, 255, 255), (0, 50 + i * 50), (1920, 50 + i * 50))
 
         self.screen.blit(self.bar_bot, (0, self.H - 110))
-        pygame.draw.rect(self.bar_bot, (0, 255, 0), [45, 0, 25, 107])
+        pygame.draw.rect(self.bar_bot, (0, 255, 0), [75, 0, 25, 107])
         self.bar_bot.blit(self.big_tabs[2], self.big_tabs_rect[2])
 
 

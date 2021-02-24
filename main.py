@@ -446,6 +446,7 @@ class Game:
                             elif self.actual_selection == 1:
                                 self.menu = False
                                 self.map_editor = True
+                                self.MapEditor.update_edit()
                             elif self.actual_selection == 2:
                                 self.menu = False
                                 self.map_loader = True
@@ -454,6 +455,7 @@ class Game:
                             elif self.actual_selection == 3:
                                 self.menu = False
                                 self.game = False
+                                close_map_editor()
 
                 self.ground_group.draw(self.screen)
                 self.decorative_group_others.draw(self.screen)
@@ -666,6 +668,16 @@ class Game:
                 self.current_time = pygame.time.get_ticks()  # met à jour le temps
                 pygame.display.flip()  # met à jour l'écran
                 self.clock.tick(60)  # met les FPS à 60
+
+
+def close_map_editor():
+    with open("map storage/actual_map.json") as actual_map:
+        current_map = json.load(actual_map)
+
+    current_map["actual_map_editing"] = "None"
+
+    with open("map storage/actual_map.json", "w") as actual_map:
+        json.dump(current_map, actual_map, indent=2)
 
 
 # si raspberry => pygame.display.set_mode((1900, 1000))
