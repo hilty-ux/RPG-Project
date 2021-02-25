@@ -2,6 +2,7 @@ import pygame
 from sys import platform
 import json
 
+# importe tous les autres fichiers
 import Player
 import text
 import Decoration_Classes as Dc
@@ -13,8 +14,12 @@ import map_loader as ml
 
 class Game:
 
+    """La classe Game est la classe qui va gérer tout le jeu, du menu au gameplay en passant
+    par le map editor/loader, la fonction main_loop() est le corps du jeu."""
+
     def __init__(self, screen):
 
+        # variables de bases définissant les stade du jeu
         self.screen = screen
         self.game = True
         self.menu = True
@@ -22,40 +27,6 @@ class Game:
         self.map_editor = False
         self.map_loader = False
         self.inside_house = False
-
-        self.width = self.screen.get_width()
-        self.height = self.screen.get_height()
-
-        self.tree = pygame.image.load("assets/Trees/Nature Tree 100w.png")
-        self.slab = pygame.image.load("assets/Road/Slab Autumn 100w.png")
-        self.grass = pygame.image.load("assets/Grass/Grass Autumn 100w.png")
-        self.rock = pygame.image.load("assets/Road/rock 100w.png")
-
-        self.second_grass = pygame.image.load("assets/Assets rpg pack/rpg-pack/tiles/generic-rpg-Slice.png")
-        self.second_grass = pygame.transform.scale(self.second_grass, (100, 100))
-        self.second_tree = pygame.image.load(
-            "assets/Assets rpg pack/rpg-pack/props n decorations/generic-rpg-tree01.png")
-        self.second_tree = pygame.transform.scale(self.second_tree, (53 * 3, 74 * 3))
-        self.fern = pygame.image.load("assets/Assets rpg pack/rpg-pack/props n decorations/generic-rpg-grass01.png")
-        self.fern = pygame.transform.scale(self.fern, (13 * 3, 7 * 3))
-        self.second_road_left = pygame.image.load("assets/Assets rpg pack/rpg-pack/tiles/generic-rpg-tile14.png")
-        self.second_road_right = pygame.image.load("assets/Assets rpg pack/rpg-pack/tiles/generic-rpg-tile48.png")
-        self.second_road_right = pygame.transform.scale(self.second_road_right, (100, 100))
-        self.second_road_left = pygame.transform.scale(self.second_road_left, (100, 100))
-        self.road_corner_top_left = pygame.image.load("assets/Assets rpg pack/rpg-pack/tiles/generic-rpg-tile19.png")
-        self.road_corner_top_left = pygame.transform.scale(self.road_corner_top_left, (100, 100))
-        self.third_tree = pygame.image.load(
-            "assets/Assets rpg pack/rpg-pack/props n decorations/generic-rpg-tree02.png")
-        self.third_tree = pygame.transform.scale(self.third_tree, (54 * 3, 74 * 3))
-        self.road_corner_bottom_right_empty = pygame.image.load(
-            "assets/Assets rpg pack/rpg-pack/tiles/generic-rpg-tile51.png")
-        self.road_corner_bottom_right_empty = pygame.transform.scale(self.road_corner_bottom_right_empty, (100, 100))
-        self.road_top = pygame.image.load("assets/Assets rpg pack/rpg-pack/tiles/generic-rpg-tile25.png")
-        self.road_top = pygame.transform.scale(self.road_top, (100, 100))
-        self.road_bot = pygame.image.load("assets/Assets rpg pack/rpg-pack/tiles/generic-rpg-tile52.png")
-        self.road_bot = pygame.transform.scale(self.road_bot, (100, 100))
-        self.lake = pygame.image.load("assets/Assets rpg pack/rpg-pack/props n decorations/generic-rpg-mini-lake.png")
-        self.lake = pygame.transform.scale(self.lake, (200, 200))
 
         # crée les maps, sous formes de listes de listes contenant pour chaque chiffre une information sur le bloc,
         # il y a différentes listes pour représenter différentes "couches", d'abord le sol, puis les objets decoratifs
@@ -255,10 +226,14 @@ class Game:
             self.map_player = self.map_player_default
             self.map_others = self.map_others_default
 
+        # réinitialise la classe du joueur pour mettre à jour certains paramètres
         self.pl = Player.Player(self.screen, self.map_player)
 
     def update_map(self, basic):
 
+        """Cette fonction sert à mettre à jour la map si jamais l'utilisateur a chargé une autre map que celle
+        de base, pour ce faire, tous les groupes de sprites (images) sont vidés pour être reremplis avec la nouvelle
+        map."""
         self.ground_group.empty()
         self.decorative_group_tree.empty()
         self.decorative_group_others.empty()
@@ -514,6 +489,8 @@ class Game:
                             self.MapEditor.main_display()
                             self.MapEditor.save_map()
                             self.MapEditor.show_bar = True
+                        if event.key == pygame.K_z and pygame.key.get_mods() & pygame.KMOD_LCTRL:
+                            self.MapEditor.cancel()
 
                         if event.key == pygame.K_b and self.MapEditor.big_tab != "build":
                             self.MapEditor.big_tab = "build"

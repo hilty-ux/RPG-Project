@@ -136,6 +136,10 @@ class MainDisplay:
             self.map_to_edit = self.current_map["actual_map_editing"]
             self.load_map_for_edit()
 
+        self.last_action = []
+
+        self.dk = DisplayKeys(self.screen)
+
     def update_edit(self):
         with open("map storage/actual_map.json") as actual_map:
             self.current_map = json.load(actual_map)
@@ -227,22 +231,31 @@ class MainDisplay:
         pos[1] = math.floor(pos[1] / 100) * 100
 
         if self.big_tab == "build":
+            self.last_action = [math.floor(pos[1] / 100), math.floor(pos[0] / 100),
+                                pos[0], pos[1]]
             if self.mb.onglet == "grass":
                 self.map_ground_empty[math.floor(pos[1] / 100)][math.floor(pos[0] / 100)] = \
                     self.trad_selection_grass[self.mb.actual_selection]
                 self.selection_grass[self.mb.actual_selection](pos[0], pos[1])
+
             elif self.mb.onglet == "road":
                 self.map_ground_empty[math.floor(pos[1] / 100)][math.floor(pos[0] / 100)] = \
                     self.trad_selection_road[self.mb.actual_selection]
                 self.selection_road[self.mb.actual_selection](pos[0], pos[1])
+
             elif self.mb.onglet == "inside":
                 self.map_ground_empty[math.floor(pos[1] / 100)][math.floor(pos[0] / 100)] = \
                     self.trad_selection_inside[self.mb.actual_selection]
                 self.selection_inside[self.mb.actual_selection](pos[0], pos[1])
+
         elif self.big_tab == "decorative":
+            self.last_action = [math.floor(pos[1] / 100), math.floor(pos[0] / 100),
+                                pos[0], pos[1]]
+
             self.map_decorative_empty[math.floor(pos[1] / 100)][math.floor(pos[0] / 100)] = \
                 self.trad_selection_decorative[self.mbd.current_selection]
             self.decorative_selection[self.mbd.current_selection](pos[0], pos[1])
+
         elif self.big_tab == "collision":
             if self.collision_map[math.floor(pos_coll[1] / 50)][math.floor(pos_coll[0] / 50)] == 0:
                 self.collision_map[math.floor(pos_coll[1] / 50)][math.floor(pos_coll[0] / 50)] = 3
@@ -255,6 +268,22 @@ class MainDisplay:
 
         print(pygame.mouse.get_pos())
         print(pos_coll)
+
+    def cancel(self):
+
+        if self.big_tab == "build":
+            self.map_ground_empty[self.last_action[0]][self.last_action[1]] = 0
+            for sprites in self.ground_group:
+                if sprites.rect.collidepoint((self.last_action[2], self.last_action[3])):
+                    self.ground_group.remove(sprites)
+        elif self.big_tab == "decorative":
+            self.map_decorative_empty[self.last_action[0]][self.last_action[1]] = 0
+            for sprites in self.decorative_group_others:
+                if sprites.rect.collidepoint((self.last_action[2], self.last_action[3])):
+                    self.ground_group.remove(sprites)
+            for sprites in self.decorative_group_tree:
+                if sprites.rect.collidepoint((self.last_action[2], self.last_action[3])):
+                    self.ground_group.remove(sprites)
 
     def save_map(self):
         with open("map storage/actual_map.json") as map_:
@@ -287,12 +316,14 @@ class MainDisplay:
                 self.decorative_group_tree.draw(self.screen)
                 self.house_group.draw(self.screen)
                 self.mb.display_bar_bot()
+                self.dk.display_keys()
             elif self.big_tab == "decorative":
                 self.ground_group.draw(self.screen)
                 self.decorative_group_others.draw(self.screen)
                 self.decorative_group_tree.draw(self.screen)
                 self.house_group.draw(self.screen)
                 self.mbd.main_display()
+                self.dk.display_keys()
             elif self.big_tab == "collision":
                 self.ground_group.draw(self.screen)
                 self.decorative_group_others.draw(self.screen)
@@ -300,6 +331,41 @@ class MainDisplay:
                 self.house_group.draw(self.screen)
                 self.mbc.main_display()
                 self.collision_group.draw(self.screen)
+
+
+
+class DisplayKeys:
+
+    def __init__(self, screen):
+
+        self.screen = screen
+        self.W = self.screen.get_width()
+        self.H = self.screen.get_height()
+
+        self.main_surf = pygame.Surface((250, 210))
+        self.main_surf.fill((255, 255, 255))
+
+        self.police = pygame.font.Font("assets/Police/advanced_pixel-7.ttf", 25)
+        self.texts = [self.police.render("Construire : Clic droit", True, (0, 0, 0)),
+                      self.police.render("Annuler : CTRL+Z", True, (0, 0, 0)),
+                      self.police.render("Enregistrer map : CTRL+S", True, (0, 0, 0)),
+                      self.police.render("Changer bloc: GAUCHe/DROITE", True, (0, 0, 0)),
+                      self.police.render("Changer thème: HAUT/BAS", True, (0, 0, 0)),
+                      self.police.render("Build : b", True, (0, 0, 0)),
+                      self.police.render("Decorate : d", True, (0, 0, 0)),
+                      self.police.render("Collision : c", True, (0, 0, 0))]
+        self.texts_rect = [i.get_rect() for i in self.texts]
+        for i in range(8):
+            self.texts_rect[i].left = 5
+            self.texts_rect[i].y = i * 25 + 5
+            self.main_surf.blit(self.texts[i], self.texts_rect[i])
+        self.main_rect = self.main_surf.get_rect()
+        self.main_rect.x, self.main_rect.y = self.W - 250, self.H - 210
+
+        self.main_surf.set_alpha(128)
+
+    def display_keys(self):
+        self.screen.blit(self.main_surf, self.main_rect)
 
 
 class MenuBarCollision:
@@ -328,6 +394,14 @@ class MenuBarCollision:
             self.big_tabs_rect[i].left = 10 + i * 25
             self.bar_bot.blit(self.big_tabs[i], self.big_tabs_rect[i])
 
+        self.police_explain = pygame.font.Font("assets/Police/advanced_pixel-7.ttf", 60)
+        self.comment = self.police_explain.render("Appuyez sur l'écran pour rajouter un mur invisible", True, (0, 0, 0))
+        self.comment2 = self.police_explain.render("Appuyez sur le carré rouge crée pour le retier", True, (0, 0, 0))
+        self.comment_rect = self.comment.get_rect()
+        self.comment2_rect = self.comment2.get_rect()
+        self.bar_bot.blit(self.comment, (200, 5))
+        self.bar_bot.blit(self.comment2, (200, 50))
+
         self.current_selection = 0
 
     def main_display(self):
@@ -338,7 +412,7 @@ class MenuBarCollision:
             pygame.draw.line(self.surf_line, (255, 255, 255), (0, 50 + i * 50), (1920, 50 + i * 50))
 
         self.screen.blit(self.bar_bot, (0, self.H - 110))
-        pygame.draw.rect(self.bar_bot, (0, 255, 0), [75, 0, 25, 107])
+        pygame.draw.rect(self.bar_bot, (0, 255, 0), [70, 0, 25, 107])
         self.bar_bot.blit(self.big_tabs[2], self.big_tabs_rect[2])
 
 
