@@ -3,6 +3,7 @@
 RPG - Project by Théophile, Alex, Lucas and William
 
 Main Programmer : Théophile Aumont
+
 Co-Dev/Game Designer : Alexander Grot, Lucas Marcinkowski, William Scian
 
 
