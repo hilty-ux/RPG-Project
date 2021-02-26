@@ -249,6 +249,10 @@ class MainDisplay:
                 self.selection_inside[self.mb.actual_selection](pos[0], pos[1])
 
         elif self.big_tab == "decorative":
+            if self.mbd.current_selection == 11:
+                self.delete_decorative(pygame.mouse.get_pos())
+                return "deleted"
+
             self.last_action = [math.floor(pos[1] / 100), math.floor(pos[0] / 100),
                                 pos[0], pos[1]]
 
@@ -268,6 +272,18 @@ class MainDisplay:
 
         print(pygame.mouse.get_pos())
         print(pos_coll)
+
+    def delete_decorative(self, pos):
+        pos_del = [0, 0]
+        pos_del[0] = math.floor(pos[0] / 100)
+        pos_del[1] = math.floor(pos[1] / 100)
+        self.map_decorative_empty[pos_del[1]][pos_del[0]] = 0
+        for sprites in self.decorative_group_others:
+            if sprites.rect.collidepoint(pos):
+                self.decorative_group_others.remove(sprites)
+        for sprites in self.decorative_group_tree:
+            if sprites.rect.collidepoint(pos):
+                self.decorative_group_tree.remove(sprites)
 
     def cancel(self):
 
@@ -331,7 +347,6 @@ class MainDisplay:
                 self.house_group.draw(self.screen)
                 self.mbc.main_display()
                 self.collision_group.draw(self.screen)
-
 
 
 class DisplayKeys:
@@ -424,7 +439,7 @@ class MenuBarDecorative:
         self.W = self.screen.get_width()
         self.H = self.screen.get_height()
 
-        self.bar_bot = pygame.Surface((self.W - 300, 110))
+        self.bar_bot = pygame.Surface((self.W - 200, 110))
         self.bar_bot.fill((255, 255, 255))
         self.bar_bot.set_alpha(200)
 
@@ -461,6 +476,7 @@ class MenuBarDecorative:
 
         self.screen.blit(self.bar_bot, (0, self.H - 110))
         self.decoration_group.draw(self.bar_bot)
+        pygame.draw.rect(self.bar_bot, (255, 0, 0), [1355, 5, 100, 100])
         pygame.draw.rect(self.bar_bot, (0, 255, 0), [45, 0, 25, 107])
         pygame.draw.rect(self.screen, (0, 255, 0), [self.current_selection * 105 + 200, self.H - 5, 100, 5])
         self.bar_bot.blit(self.big_tabs[1], self.big_tabs_rect[1])

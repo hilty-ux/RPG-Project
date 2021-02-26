@@ -481,7 +481,7 @@ class Game:
                         elif self.MapEditor.big_tab == "decorative":
                             if event.key == pygame.K_LEFT and self.MapEditor.mbd.current_selection > 0:
                                 self.MapEditor.mbd.current_selection -= 1
-                            if event.key == pygame.K_RIGHT and self.MapEditor.mbd.current_selection < 10:
+                            if event.key == pygame.K_RIGHT and self.MapEditor.mbd.current_selection < 11:
                                 self.MapEditor.mbd.current_selection += 1
                         if event.key == pygame.K_s and pygame.key.get_mods() & pygame.KMOD_LCTRL:
                             self.add_pop_up_saving()
