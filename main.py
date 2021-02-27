@@ -4,12 +4,14 @@ import json
 
 # importe tous les autres fichiers
 import Player
+import Player2
 import text
 import Decoration_Classes as Dc
 import Ground_Classes as Gr
 import Ennemies as En
 import Map_Editor as Me
 import map_loader as ml
+import Sound_manager as Sm
 
 
 class Game:
@@ -27,20 +29,25 @@ class Game:
         self.map_editor = False
         self.map_loader = False
         self.inside_house = False
+        self.inside_house2 = False
+        self.blocking = False
+        self.blocking2 = False
+        self.hit = False
+        self.hit2 = False
 
         # crée les maps, sous formes de listes de listes contenant pour chaque chiffre une information sur le bloc,
         # il y a différentes listes pour représenter différentes "couches", d'abord le sol, puis les objets decoratifs
-        self.map_ground_default = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 4, 6, 6, 6, 6, 6, 8, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 1, 5, 7, 7, 7, 7, 9, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+        self.map_ground_default = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 4, 6, 6, 6, 6, 6, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 1, 5, 7, 7, 7, 7, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
         # pour rendre le mouvement plus fluide, la classe du joueur est deux fois plus importantes que celle de
         # l'environnement, pour que le joueur se déplace de demi-cases mais que l'environnement soit constitué de
@@ -94,9 +101,13 @@ class Game:
 
         # initialise les variables relatives au joueur ; sa direction de départ, ses statuts ainsi que sa classe
         self.pl = Player.Player(self.screen, self.map_player_default)
+        self.pl2 = Player2.Player(self.screen, self.map_player_default)
         self.direction = "right"
-        self.moving = False
+        self.direction2 = "right"
+        self.moving = [False, False, False, False]
+        self.moving2 = [False, False, False, False]
         self.attacking = False
+        self.attacking2 = False
 
         # crée un dictionnaire de touches préssées ou non
         self.pressed = {}
@@ -104,6 +115,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.current_time = pygame.time.get_ticks()
         self.delay_movement = pygame.time.get_ticks()
+        self.delay_movement2 = pygame.time.get_ticks()
 
         # initialises la classe de texte
         self.txt = text.PopUp(self.screen)
@@ -228,6 +240,9 @@ class Game:
 
         # réinitialise la classe du joueur pour mettre à jour certains paramètres
         self.pl = Player.Player(self.screen, self.map_player)
+        self.pl2 = Player2.Player(self.screen, self.map_player)
+
+        self.sound_dict = Sm.SoundManager()
 
     def update_map(self, basic):
 
@@ -274,6 +289,7 @@ class Game:
             self.show_decorative()
 
         self.pl = Player.Player(self.screen, self.map_player)
+        self.pl2 = Player2.Player(self.screen, self.map_player)
 
     def show_map(self):
 
@@ -556,16 +572,53 @@ class Game:
                         self.game = False
                     if event.type == pygame.KEYDOWN:
                         self.pressed[event.key] = True
-                        self.moving = True
                         if event.key == pygame.K_ESCAPE:
                             self.running = False
                             self.menu = True
+
+                        if event.key == pygame.K_z:
+                            self.moving[0] = True
+                        if event.key == pygame.K_s:
+                            self.moving[1] = True
+                        if event.key == pygame.K_d:
+                            self.moving[2] = True
+                        if event.key == pygame.K_q:
+                            self.moving[3] = True
+
+                        if event.key == pygame.K_UP:
+                            self.moving2[0] = True
+                        if event.key == pygame.K_DOWN:
+                            self.moving2[1] = True
+                        if event.key == pygame.K_LEFT:
+                            self.moving2[2] = True
+                        if event.key == pygame.K_RIGHT:
+                            self.moving2[3] = True
+
+                        if event.key == pygame.K_e and not self.attacking:
+                            self.attacking = True
+                        if event.key == pygame.K_RCTRL and not self.attacking2:
+                            self.attacking2 = True
+
                     if event.type == pygame.KEYUP:
                         self.pressed[event.key] = False
-                        self.moving = False
-                    if event.type == pygame.MOUSEBUTTONDOWN:
-                        if event.button == 1 and not self.attacking:
-                            self.attacking = True
+
+                        if event.key == pygame.K_z:
+                            self.moving[0] = False
+                        if event.key == pygame.K_s:
+                            self.moving[1] = False
+                        if event.key == pygame.K_d:
+                            self.moving[2] = False
+                        if event.key == pygame.K_q:
+                            self.moving[3] = False
+
+                        if event.key == pygame.K_UP:
+                            self.moving2[0] = False
+                        if event.key == pygame.K_DOWN:
+                            self.moving2[1] = False
+                        if event.key == pygame.K_LEFT:
+                            self.moving2[2] = False
+                        if event.key == pygame.K_RIGHT:
+                            self.moving2[3] = False
 
                 # limite le mouvement du joueur à 1 toutes les 50 ms
                 if self.current_time - self.delay_movement > 50:
@@ -573,33 +626,72 @@ class Game:
                     self.delay_movement = self.current_time
                     # si le joueur n'est pas en train d'attaquer, le fait bouger
                     if not self.attacking:
-                        if self.pressed.get(pygame.K_z):
-                            self.pl.move("up", self.inside_house_map_player, self.inside_house)
-                            self.direction = "back"
-                        if self.pressed.get(pygame.K_s):
-                            self.pl.move("down", self.inside_house_map_player, self.inside_house)
-                            self.direction = "front"
-                        if self.pressed.get(pygame.K_q):
-                            self.pl.move("left", self.inside_house_map_player, self.inside_house)
-                            self.direction = "left"
-                        if self.pressed.get(pygame.K_d):
-                            self.pl.move("right", self.inside_house_map_player, self.inside_house)
-                            self.direction = "right"
+                        if not self.blocking:
+                            if self.pressed.get(pygame.K_z):
+                                self.pl.move("up", self.inside_house_map_player, self.inside_house)
+                                self.direction = "back"
+                            if self.pressed.get(pygame.K_s):
+                                self.pl.move("down", self.inside_house_map_player, self.inside_house)
+                                self.direction = "front"
+                            if self.pressed.get(pygame.K_q):
+                                self.pl.move("left", self.inside_house_map_player, self.inside_house)
+                                self.direction = "left"
+                            if self.pressed.get(pygame.K_d):
+                                self.pl.move("right", self.inside_house_map_player, self.inside_house)
+                                self.direction = "right"
+                        if self.pressed.get(pygame.K_a):
+                            self.blocking = True
+                        else:
+                            self.blocking = False
+
+                if self.current_time - self.delay_movement2 > 50:
+                    # reset le délai
+                    self.delay_movement2 = self.current_time
+                    # si le joueur n'est pas en train d'attaquer, le fait bouger
+                    if not self.attacking2:
+                        if not self.blocking2:
+                            if self.pressed.get(pygame.K_UP):
+                                self.pl2.move("up", self.inside_house_map_player, self.inside_house)
+                                self.direction2 = "back"
+                            if self.pressed.get(pygame.K_DOWN):
+                                self.pl2.move("down", self.inside_house_map_player, self.inside_house)
+                                self.direction2 = "front"
+                            if self.pressed.get(pygame.K_LEFT):
+                                self.pl2.move("left", self.inside_house_map_player, self.inside_house)
+                                self.direction2 = "left"
+                            if self.pressed.get(pygame.K_RIGHT):
+                                self.pl2.move("right", self.inside_house_map_player, self.inside_house)
+                                self.direction2 = "right"
+                        if self.pressed.get(pygame.K_KP0):
+                            self.blocking2 = True
+                        else:
+                            self.blocking2 = False
 
                 # dessine/met à jour tous les composants du jeu (sol, joueur, décoration...)
                 self.ground_group.draw(self.screen)
                 self.decorative_group_others.draw(self.screen)
                 if self.pl.current_pos[1] > 11:
                     self.house_group.draw(self.screen)
-                    if self.map_player[self.pl.current_pos[1]][self.pl.current_pos[0]] == 9 or\
-                            self.map_player[self.pl.current_pos[1]][self.pl.current_pos[0]] == 8:
-                        pygame.draw.polygon(self.screen, (88, 41, 0), [(780, 688), (835, 689), (835, 751), (779, 752)])
+                    #if self.map_player[self.pl.current_pos[1]][self.pl.current_pos[0]] == 9 or \
+                    #        self.map_player[self.pl.current_pos[1]][self.pl.current_pos[0]] == 8:
+                    #    pygame.draw.polygon(self.screen, (88, 41, 0), [(548, 485), (587, 485), (587, 530), (547, 530)])
+
+                if self.pl2.current_pos[1] > 11:
+                    self.house_group.draw(self.screen)
+                    # if self.map_player[self.pl2.current_pos[1]][self.pl2.current_pos[0]] == 9 or \
+                    #         self.map_player[self.pl2.current_pos[1]][self.pl2.current_pos[0]] == 8:
+                    #    pygame.draw.polygon(self.screen, (88, 41, 0), [(548, 485), (587, 485), (587, 530), (547, 530)])
+
                 if self.chosen_map == "basic":
                     self.monster_group.draw(self.screen)
                     self.monster_group.update(self.pl.current_pos)
                 self.pl.update(self.inside_house)
-                self.pl.move_animation(self.direction, self.moving)
+                self.pl.move_animation(self.direction, self.moving, self.blocking)
+                self.pl2.update(self.inside_house)
+                self.pl2.move_animation(self.direction2, self.moving2, self.blocking2)
                 if self.pl.current_pos[1] <= 11:
+                    self.house_group.draw(self.screen)
+                if self.pl2.current_pos[1] <= 11:
                     self.house_group.draw(self.screen)
                 self.decorative_group_tree.draw(self.screen)
                 # anime le joueur si il est en train d'attaquer
@@ -609,17 +701,58 @@ class Game:
                         if 35 > self.pl.current_pos[0] > 25 and \
                                 0 < self.pl.current_pos[1] < 10:
                             self.find_collision()
+                    # crée un effet butoir sur le bouclier adverse
+                    if self.pl.rect.colliderect(self.pl2.rect) and self.blocking2:
+                        self.attacking = False
+                        self.hit = False
+                        self.pl.index_animation_att = 0
+                        self.sound_dict.shield_hit()
+
+                    if self.pl.rect.colliderect(self.pl2.rect) and not self.blocking2 and not self.hit:
+                        self.hit = True
+                        self.pl2.life -= 10
+                        self.sound_dict.slice()
                     if self.pl.attack(self.direction) == "end":
+                        if not self.hit:
+                            self.sound_dict.swoosh()
+                        self.hit = False
                         self.attacking = False
                         self.pl.index_animation_att = 0
 
+                if self.attacking2:
+                    self.pl2.attack(self.direction2)
+                    if self.pl2.index_animation_att == 2:
+                        if 35 > self.pl2.current_pos[0] > 25 and \
+                                0 < self.pl2.current_pos[1] < 10:
+                            self.find_collision()
+                    # crée un effet butoir sur le bouclier adverse
+                    if self.pl.rect.colliderect(self.pl2.rect) and self.blocking:
+                        self.attacking2 = False
+                        self.hit2 = False
+                        self.pl2.index_animation_att = 0
+                        self.sound_dict.shield_hit()
+
+                    if self.pl.rect.colliderect(self.pl2.rect) and not self.blocking and not self.hit2:
+                        self.hit2 = True
+                        self.pl.life -= 10
+                        self.sound_dict.slice()
+                    if self.pl2.attack(self.direction2) == "end":
+                        if not self.hit2:
+                            self.sound_dict.swoosh()
+                        self.hit2 = False
+                        self.attacking2 = False
+                        self.pl2.index_animation_att = 0
+
                 if self.map_player[self.pl.current_pos[1]][self.pl.current_pos[0]] == 8 and not self.inside_house:
-                    self.inside_house = True
+                    self.inside_house = False
                     self.direction = "right"
+
+                if self.map_player[self.pl2.current_pos[1]][self.pl2.current_pos[0]] == 8 and not self.inside_house2:
+                    self.inside_house2 = False
+                    self.direction2 = "right"
 
                 if self.inside_house:
                     self.screen.blit(self.flou, (0, 0))
-                    pygame.draw.rect(self.screen, (0, 0, 0), [250, 250, 800, 450])
                     self.inside_house_group_ground.draw(self.screen)
                     self.inside_house_group_decorative.draw(self.screen)
                     self.pl.update(self.inside_house)
@@ -637,6 +770,26 @@ class Game:
                         self.inside_house = False
                         self.pl.current_pos = [30, 2]
                         self.pl.inside_pos = [8, 8]
+
+                if self.inside_house2:
+                    self.screen.blit(self.flou, (0, 0))
+                    self.inside_house_group_ground.draw(self.screen)
+                    self.inside_house_group_decorative.draw(self.screen)
+                    self.pl.update(self.inside_house)
+                    index = [0, 0]
+                    if self.pl2.inside_pos[0] - 1 < 0:
+                        index[0] = 0
+                    else:
+                        index[0] = self.pl.inside_pos[0] - 1
+                    if self.pl2.inside_pos[1] - 1 < 0:
+                        index[1] = 0
+                    else:
+                        index[1] = self.pl2.inside_pos[1] - 1
+
+                    if self.inside_house_map_player[index[1]][index[0]] == 9:
+                        self.inside_house2 = False
+                        self.pl2.current_pos = [30, 2]
+                        self.pl2.inside_pos = [8, 8]
 
                 """if len(self.monster_group) == 0:
                     self.running = False"""
@@ -667,8 +820,10 @@ if platform == "win32":
 else:
     screen = pygame.display.set_mode((1900, 1000))
 pygame.init()
+pygame.mixer.init()
 
 game = Game(screen)
 game.main_loop()
 
+pygame.mixer.quit()
 pygame.quit()

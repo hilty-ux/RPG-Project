@@ -5,44 +5,40 @@ class Player:
 
     def __init__(self, screen, current_map):
         self.screen = screen
-        self.W = self.screen.get_width()
-        self.H = self.screen.get_height()
         self.map = current_map
-        self.current_pos = [10, 18]
+        self.current_pos = [22, 18]
         self.inside_pos = [1, 4]
         self.life = 100
+        self.W = self.screen.get_width()
+        self.H = self.screen.get_height()
 
-        self.sprite_front = [pygame.image.load("assets/Player/Walk/walk down1.png"),
-                             pygame.image.load("assets/Player/Walk/walk down2.png"),
-                             pygame.image.load("assets/Player/Walk/walk down3.png"),
-                             pygame.image.load("assets/Player/Walk/walk down4.png")]
+        self.sprite_front = [pygame.image.load("assets/Player2/Walk/walk down1.png"),
+                             pygame.image.load("assets/Player2/Walk/walk down2.png"),
+                             pygame.image.load("assets/Player2/Walk/walk down3.png"),
+                             pygame.image.load("assets/Player2/Walk/walk down4.png")]
         for i in self.sprite_front:  # redimensionne les images
-            self.sprite_front[self.sprite_front.index(i)] = pygame.transform.scale(i, (
-                i.get_width() * 6, i.get_height() * 6))
+            self.sprite_front[self.sprite_front.index(i)] = pygame.transform.scale(i, (i.get_width()*6, i.get_height()*6))
 
-        self.sprite_back = [pygame.image.load("assets/Player/Walk/walk up1.png"),
-                            pygame.image.load("assets/Player/Walk/walk up2.png"),
-                            pygame.image.load("assets/Player/Walk/walk up3.png"),
-                            pygame.image.load("assets/Player/Walk/walk up4.png")]
+        self.sprite_back = [pygame.image.load("assets/Player2/Walk/walk up1.png"),
+                            pygame.image.load("assets/Player2/Walk/walk up2.png"),
+                            pygame.image.load("assets/Player2/Walk/walk up3.png"),
+                            pygame.image.load("assets/Player2/Walk/walk up4.png")]
         for i in self.sprite_back:
-            self.sprite_back[self.sprite_back.index(i)] = pygame.transform.scale(i, (
-                i.get_width() * 6, i.get_height() * 6))
+            self.sprite_back[self.sprite_back.index(i)] = pygame.transform.scale(i, (i.get_width()*6, i.get_height()*6))
 
-        self.sprite_right = [pygame.image.load("assets/Player/Walk/walk right1.png"),
-                             pygame.image.load("assets/Player/Walk/walk right2.png"),
-                             pygame.image.load("assets/Player/Walk/walk right3.png"),
-                             pygame.image.load("assets/Player/Walk/walk right4.png")]
+        self.sprite_right = [pygame.image.load("assets/Player2/Walk/walk right1.png"),
+                             pygame.image.load("assets/Player2/Walk/walk right2.png"),
+                             pygame.image.load("assets/Player2/Walk/walk right3.png"),
+                             pygame.image.load("assets/Player2/Walk/walk right4.png")]
         for i in self.sprite_right:
-            self.sprite_right[self.sprite_right.index(i)] = pygame.transform.scale(i, (
-                i.get_width() * 6, i.get_height() * 6))
+            self.sprite_right[self.sprite_right.index(i)] = pygame.transform.scale(i, (i.get_width()*6, i.get_height()*6))
 
-        self.sprite_left = [pygame.image.load("assets/Player/Walk/walk left1.png"),
-                            pygame.image.load("assets/Player/Walk/walk left2.png"),
-                            pygame.image.load("assets/Player/Walk/walk left3.png"),
-                            pygame.image.load("assets/Player/Walk/walk left4.png")]
+        self.sprite_left = [pygame.image.load("assets/Player2/Walk/walk left1.png"),
+                            pygame.image.load("assets/Player2/Walk/walk left2.png"),
+                            pygame.image.load("assets/Player2/Walk/walk left3.png"),
+                            pygame.image.load("assets/Player2/Walk/walk left4.png")]
         for i in self.sprite_left:
-            self.sprite_left[self.sprite_left.index(i)] = pygame.transform.scale(i, (
-                i.get_width() * 6, i.get_height() * 6))
+            self.sprite_left[self.sprite_left.index(i)] = pygame.transform.scale(i, (i.get_width()*6, i.get_height()*6))
 
         self.index_animation = 0
         self.index_animation_att = 0
@@ -54,55 +50,51 @@ class Player:
         self.delay_anim = pygame.time.get_ticks()
         self.delay_attack_anim = pygame.time.get_ticks()
 
-        self.attack_sprites_right = [pygame.image.load("assets/Player/Attack/attack right1.png"),
-                                     pygame.image.load("assets/Player/Attack/attack right2.png"),
-                                     pygame.image.load("assets/Player/Attack/attack right3.png"),
-                                     pygame.image.load("assets/Player/Attack/attack right4.png")]
+        self.attack_sprites_right = [pygame.image.load("assets/Player2/Attack/attack right1.png"),
+                                     pygame.image.load("assets/Player2/Attack/attack right2.png"),
+                                     pygame.image.load("assets/Player2/Attack/attack right3.png"),
+                                     pygame.image.load("assets/Player2/Attack/attack right4.png")]
         for i in self.attack_sprites_right:
-            self.attack_sprites_right[self.attack_sprites_right.index(i)] = pygame.transform.scale(i, (
-                i.get_width() * 6, i.get_height() * 6))
+            self.attack_sprites_right[self.attack_sprites_right.index(i)] = pygame.transform.scale(i, (i.get_width()*6, i.get_height()*6))
 
-        self.attack_sprites_left = [pygame.image.load("assets/Player/Attack/attack left1.png"),
-                                    pygame.image.load("assets/Player/Attack/attack left2.png"),
-                                    pygame.image.load("assets/Player/Attack/attack left3.png"),
-                                    pygame.image.load("assets/Player/Attack/attack left4.png")]
+        self.attack_sprites_left = [pygame.image.load("assets/Player2/Attack/attack left1.png"),
+                                    pygame.image.load("assets/Player2/Attack/attack left2.png"),
+                                    pygame.image.load("assets/Player2/Attack/attack left3.png"),
+                                    pygame.image.load("assets/Player2/Attack/attack left4.png")]
         for i in self.attack_sprites_left:
-            self.attack_sprites_left[self.attack_sprites_left.index(i)] = pygame.transform.scale(i, (
-                i.get_width() * 6, i.get_height() * 6))
+            self.attack_sprites_left[self.attack_sprites_left.index(i)] = pygame.transform.scale(i, (i.get_width()*6, i.get_height()*6))
 
-        self.attack_sprites_front = [pygame.image.load("assets/Player/Attack/attack down1.png"),
-                                     pygame.image.load("assets/Player/Attack/attack down2.png"),
-                                     pygame.image.load("assets/Player/Attack/attack down3.png"),
-                                     pygame.image.load("assets/Player/Attack/attack down4.png")]
+        self.attack_sprites_front = [pygame.image.load("assets/Player2/Attack/attack down1.png"),
+                                     pygame.image.load("assets/Player2/Attack/attack down2.png"),
+                                     pygame.image.load("assets/Player2/Attack/attack down3.png"),
+                                     pygame.image.load("assets/Player2/Attack/attack down4.png")]
         for i in self.attack_sprites_front:
-            self.attack_sprites_front[self.attack_sprites_front.index(i)] = pygame.transform.scale(i, (
-                i.get_width() * 6, i.get_height() * 6))
+            self.attack_sprites_front[self.attack_sprites_front.index(i)] = pygame.transform.scale(i, (i.get_width()*6, i.get_height()*6))
 
-        self.attack_sprites_back = [pygame.image.load("assets/Player/Attack/attack up1.png"),
-                                    pygame.image.load("assets/Player/Attack/attack up2.png"),
-                                    pygame.image.load("assets/Player/Attack/attack up3.png"),
-                                    pygame.image.load("assets/Player/Attack/attack up4.png")]
+        self.attack_sprites_back = [pygame.image.load("assets/Player2/Attack/attack up1.png"),
+                                    pygame.image.load("assets/Player2/Attack/attack up2.png"),
+                                    pygame.image.load("assets/Player2/Attack/attack up3.png"),
+                                    pygame.image.load("assets/Player2/Attack/attack up4.png")]
         for i in self.attack_sprites_back:
-            self.attack_sprites_back[self.attack_sprites_back.index(i)] = pygame.transform.scale(i, (
-                i.get_width() * 6, i.get_height() * 6))
+            self.attack_sprites_back[self.attack_sprites_back.index(i)] = pygame.transform.scale(i, (i.get_width()*6, i.get_height()*6))
 
         self.police_name = pygame.font.Font("assets/Police/advanced_pixel-7.ttf", 50)
-        self.name = self.police_name.render("White Player", True, (255, 255, 255))
+        self.name = self.police_name.render("Red Player", True, (255, 0, 0))
         self.name_rect = self.name.get_rect()
-        self.name_rect.x, self.name_rect.y = 10, 15
+        self.name_rect.x, self.name_rect.y = self.W - 10 - self.name.get_width(), 15
 
-        self.block_back = pygame.image.load("assets/Player/Block/block up.png")
+        self.block_back = pygame.image.load("assets/Player2/Block/block up.png")
         self.block_back = pygame.transform.scale(self.block_back,
                                                  (self.block_back.get_width() * 6, self.block_back.get_height() * 6))
 
-        self.block_front = pygame.image.load("assets/Player/Block/block down.png")
+        self.block_front = pygame.image.load("assets/Player2/Block/block down.png")
         self.block_front = pygame.transform.scale(self.block_front,
                                                   (self.block_front.get_width() * 6, self.block_front.get_height() * 6))
 
-        self.block_left = pygame.image.load("assets/Player/Block/block left.png")
+        self.block_left = pygame.image.load("assets/Player2/Block/block left.png")
         self.block_left = pygame.transform.scale(self.block_left,
                                                  (self.block_left.get_width() * 6, self.block_left.get_height() * 6))
-        self.block_right = pygame.image.load("assets/Player/Block/block right.png")
+        self.block_right = pygame.image.load("assets/Player2/Block/block right.png")
         self.block_right = pygame.transform.scale(self.block_right,
                                                   (self.block_right.get_width() * 6, self.block_right.get_height() * 6))
 
@@ -222,8 +214,8 @@ class Player:
                     print(e)
 
     def update(self, inside_house):
-        pygame.draw.rect(self.screen, (0, 0, 0), [10, 5, self.W // 2 - 100, 10])
-        pygame.draw.rect(self.screen, (255, 255, 255), [10, 5, ((self.W // 2) // 100) * self.life, 10])
+        pygame.draw.rect(self.screen, (0, 0, 0), [self.W - 10 - (self.W // 2 - 100), 5, self.W // 2 - 100, 10])
+        pygame.draw.rect(self.screen, (255, 0, 0), [self.W - 10 - (((self.W // 2) // 100) * self.life), 5, ((self.W // 2) // 100) * self.life, 10])
         self.screen.blit(self.name, self.name_rect)
         self.rect = self.image.get_rect()
         try:
