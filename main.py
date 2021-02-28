@@ -23,21 +23,21 @@ class Game:
     def __init__(self, screen):
 
         # variables de bases définissant les stade du jeu
-        self.screen = screen
-        self.game = True
-        self.fighting = False
-        self.menu = True
-        self.running = False
-        self.end_screen = False
-        self.map_editor = False
-        self.map_loader = False
-        self.inside_house = False
-        self.inside_house2 = False
-        self.blocking = False
-        self.blocking2 = False
-        self.hit = False
-        self.hit2 = False
-        self.winner = None
+        self.screen = screen  # récupère la variable d'écran
+        self.game = True  # dis si le jeu est allumé ou pas
+        self.fighting = False  # dis si le combat a commencé
+        self.menu = True  # dis si le jeu est au menu
+        self.running = False  # dis si la phase de jeu est sur play
+        self.end_screen = False  # dis si la phase de jeu est sur end screen
+        self.map_editor = False  # dis si le jeu est sur l'éditeur de map
+        self.map_loader = False  # dis si le jeu est sur le chargeur de map
+        self.inside_house = False  # dis si le joueur est dans la maison
+        self.inside_house2 = False  # dis si le joueur 2 est dans la maison
+        self.blocking = False  # dis si le joueur 1 est actuellement en train de bloquer
+        self.blocking2 = False  # dis is le joueur 2 est actuellement en train de bloquer
+        self.hit = False  # dis si le joueur 1 a frappé l'adversaire pendant son coup
+        self.hit2 = False  # dis si le joueur 2 a frappé l'adversaire pendant son coup
+        self.winner = None  # dis qui a gagné le round
 
         # crée les maps, sous formes de listes de listes contenant pour chaque chiffre une information sur le bloc,
         # il y a différentes listes pour représenter différentes "couches", d'abord le sol, puis les objets decoratifs
@@ -92,15 +92,15 @@ class Game:
                                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
         # initialise les variables relatives au joueur ; sa direction de départ, ses statuts ainsi que sa classe
-        self.pl = Player.Player(self.screen, self.map_player_default)
+        self.pl = Player.Player(self.screen, self.map_player_default)  # initialise le joueur
         self.pl2 = Player2.Player(self.screen, self.map_player_default)
-        self.direction = "right"
+        self.direction = "right"  # definis sa direction
         self.direction2 = "right"
-        self.moving = [False, False, False, False]
+        self.moving = [False, False, False, False]  # definis si il est en train de bouger dans une direction
         self.moving2 = [False, False, False, False]
-        self.attacking = False
+        self.attacking = False  # definis si il est en train d'attaquer
         self.attacking2 = False
-        self.score1 = 0
+        self.score1 = 0  # definis son score
         self.score2 = 0
 
         # crée un dictionnaire de touches préssées ou non
@@ -186,14 +186,18 @@ class Game:
                                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
+        # definis un "calque" blanc à demi transparent pour pouvoir afficher le menu clairement
         self.flou = pygame.Surface((self.screen.get_width(), self.screen.get_height()))
-        self.flou.fill((255, 255, 255))
-        self.flou.set_alpha(200)
+        self.flou.fill((255, 255, 255))  # remplis ce calque de blanc
+        self.flou.set_alpha(200)  # le rends opaque à 200/255
 
-        self.W = self.screen.get_width()
+        self.W = self.screen.get_width()  # récupère la larguer et la longueur de l'écran
         self.H = self.screen.get_height()
 
         # menu
+        # listes des boutons sur le menu
+        # chaque texte est associé à une classe ayant pour attribut le texte (surface) et son
+        # rectangle (coordonnées)
         self.button_list = [text.CreateText("Play", 75, (self.W // 2, self.H // 2 - 150)),
                             text.CreateText("Map Editor", 75, (self.W // 2, self.H // 2 - 50)),
                             text.CreateText("Load Map", 75, (self.W // 2, self.H // 2 + 50)),
@@ -201,14 +205,19 @@ class Game:
         self.actual_selection = 0
 
         # map editor
+        # initialise la classe de l'éditeur de map
         self.MapEditor = Me.MainDisplay(self.screen)
-        self.group_pop_up_saving = pygame.sprite.Group()
+        self.group_pop_up_saving = pygame.sprite.Group()  # initialise le groupe de pop up saving
+        # definis une fonction lambda (fonction en une ligne) pour ajouter une pop up signifiant que
+        # l'utilisateur vient de sauvegarder
         self.add_pop_up_saving = lambda: self.group_pop_up_saving.add(text.SavingAnim((25, 25)))
 
         # map loader
+        # initialise la classe de chargeur de map
         self.MapLoader = ml.MainDisplay(self.screen)
 
         # LOADING MAP
+        # ouvre le fichier json pour récupérer des informations sur la map actuelle
         with open("map storage/actual_map.json") as m:
             self.chosen_map = json.load(m)
 
@@ -218,11 +227,14 @@ class Game:
             with open("map storage/map.json") as map_:
                 self.total_maps = json.load(map_)
 
+            # si la map actuelle n'est pas celle de base, il faut aller chercher dans les fichiers
+            # les listes représentants la maps actuelles enregistrée dans le fichier json
             self.total_maps = self.total_maps["all maps"][self.chosen_map]
             self.map_player = self.total_maps["map_collision"]
             self.map_ground = self.total_maps["map_ground"]
             self.map_others = self.total_maps["map_decorative"]
         else:
+            # sinon, ce sont les maps par defaut pré-enregistrées dans la classe game
             self.map_ground = self.map_ground_default
             self.map_player = self.map_player_default
             self.map_others = self.map_others_default
@@ -231,10 +243,13 @@ class Game:
         self.pl = Player.Player(self.screen, self.map_player)
         self.pl2 = Player2.Player(self.screen, self.map_player)
 
+        # initialise la classe du gestionnaire de son
         self.sound_dict = Sm.SoundManager()
 
+        # initialise la classe de l'affichage de l'ath (round, timer, etc...)
         self.DisplayAth = D_ath.DisplayAth(self.screen, self.score1, self.score2)
 
+        # definis la séléction de base (bouton) à l'écran de fin du jeu
         self.actual_selection_end_screen = 0
 
     def update_map(self, basic):
@@ -242,11 +257,14 @@ class Game:
         """Cette fonction sert à mettre à jour la map si jamais l'utilisateur a chargé une autre map que celle
         de base, pour ce faire, tous les groupes de sprites (images) sont vidés pour être reremplis avec la nouvelle
         map."""
+        # vide les groupes
         self.ground_group.empty()
         self.decorative_group_tree.empty()
         self.decorative_group_others.empty()
         self.house_group.empty()
 
+        # si la map est la map basique, change la map actuelle pour "basic" qui représente la map
+        # par défaut
         if basic == "basic":
             with open("map storage/actual_map.json") as actual_map:
                 current_map = json.load(actual_map)
@@ -262,6 +280,8 @@ class Game:
 
         self.chosen_map = self.chosen_map["actual_map"]
 
+        # si la map choisie n'est pas la map par defaut, il faut changer les maps actuelles
+        # par la map choisie, pour cela on va récupérer les listes dans le fichiers des maps
         if self.chosen_map != "basic":
             with open("map storage/map.json") as map_:
                 self.total_maps = json.load(map_)
@@ -273,6 +293,7 @@ class Game:
 
             self.show_map()
             self.show_decorative()
+        # sinon, on dis simplement que les maps sont les maps par defaut pré-enregistrées
         else:
             self.map_ground = self.map_ground_default
             self.map_player = self.map_player_default
@@ -281,6 +302,7 @@ class Game:
             self.show_map()
             self.show_decorative()
 
+        # réinitialise les classes du joueur pour charger la bonne map
         self.pl = Player.Player(self.screen, self.map_player)
         self.pl2 = Player2.Player(self.screen, self.map_player)
 
@@ -356,7 +378,9 @@ class Game:
                     pass
 
     def show_inside_house(self):
-
+        """Fonction inutile mais fonctionnelle, inutile car la fonctionnalité a été abandonnée,
+        elle servait à analyser le map de l'intérieur de la maison mais de fait, elle n'est plus
+        utilisée"""
         for row in range(len(self.inside_house_map_decorative)):
             for cell in range(len(self.inside_house_map_decorative[row])):
                 if self.inside_house_map_decorative[row][cell] == 2:
@@ -376,6 +400,7 @@ class Game:
                     self.add_wall(cell*100+250, row*100+150)
 
     def find_last(self, group):
+        """Renvoie le dernier membre d'un groupe"""
         last = None
         for sprites in group:
 
@@ -383,16 +408,20 @@ class Game:
         return last
 
     def find_first(self, group):
+        # revoie le premier membre d'un groupe
         for sprites in group:
             return sprites
 
     def reset_game(self):
+        """Réinitialises toutes les variables liées au jeu, les classes du joueur, l'affichage
+        in-game etc..."""
         self.pl = Player.Player(self.screen, self.map_player_default)
         self.pl2 = Player2.Player(self.screen, self.map_player_default)
         self.DisplayAth = D_ath.DisplayAth(self.screen, self.score1, self.score2)
         self.fighting = False
 
     def reset_entirely(self):
+        """Reinitialises complètement le jeu, met le score a zero, les pts de vies au max etc..."""
         self.score1 = 0
         self.score2 = 0
         self.pl = Player.Player(self.screen, self.map_player_default)
@@ -401,6 +430,13 @@ class Game:
         self.fighting = False
 
     def main_loop(self):
+        """
+        Fonction principale du jeu, c'est elle qui gère tous les affichages, tous les évènements,
+        toutes les actions, tous les modes de jeu etc...
+
+        Elle est composée de plusieurs boucle while définissant le stade actuel du jeu, pour capter tel
+        ou tel évènement, faire telle ou telle action, afficher tel ou tel stade du jeu etc...
+        """
 
         # barre de chargement
         self.show_decorative()
@@ -414,51 +450,69 @@ class Game:
 
         self.show_inside_house()
 
+        # boucle principale contenant toutes les boucles de jeu, gérant tous les modes de jeu.
+        # si self.game == False, tout le jeu s'arrête
         while self.game:
 
+            # boucle affichant le menu
             while self.menu:
 
+                # met à jour la map si nécessaire
                 if ml.update_map:
                     self.update_map("else")
                     ml.update_map = False
 
+                # captes tous les events
                 for event in pygame.event.get():
+                    # si le jeu est quité fermes toutes les boucles
                     if event.type == pygame.QUIT:
                         self.menu = False
                         self.game = False
+                    # captes le clavier
                     if event.type == pygame.KEYDOWN:
+                        # menu à choix multiples si le joueur apuies sur la fleche du haut la selection
+                        # va vers le haut et inversement
                         if event.key == pygame.K_UP and self.actual_selection > 0:
                             self.actual_selection -= 1
                         if event.key == pygame.K_DOWN and self.actual_selection < 3:
                             self.actual_selection += 1
+                        # si le joueur appuies sur enter, change le stade du jeu en fonction de la
+                        # selection actuelle
                         if event.key == 13:
+                            # lance le jeu
                             if self.actual_selection == 0:
                                 self.menu = False
                                 self.running = True
                                 self.DisplayAth = D_ath.DisplayAth(self.screen, self.score1, self.score2)
                                 self.reset_entirely()
+                            # lance l'éditeur de map
                             elif self.actual_selection == 1:
                                 self.menu = False
                                 self.map_editor = True
                                 self.MapEditor.update_edit()
+                            # lance le chargeur de map
                             elif self.actual_selection == 2:
                                 self.menu = False
                                 self.map_loader = True
                                 # met a jour les maps disponibles
                                 self.MapLoader = ml.MainDisplay(self.screen)
+                            # quites le jeu
                             elif self.actual_selection == 3:
                                 self.menu = False
                                 self.game = False
                                 close_map_editor()
 
+                # dessines l'arriere plan
                 self.ground_group.draw(self.screen)
                 self.decorative_group_others.draw(self.screen)
                 self.house_group.draw(self.screen)
                 self.decorative_group_tree.draw(self.screen)
+                # affiche le calque a demi transparent
                 self.screen.blit(self.flou, (0, 0))
 
                 rect_choice = pygame.Rect(100, 100, 350, 70)
                 rect_choice.center = self.button_list[self.actual_selection].rect.center
+                # dessines le rectangle pour représenter la selection actuelle
                 pygame.draw.rect(self.screen, (255, 0, 0), rect_choice)
 
                 for i in self.button_list:
@@ -467,6 +521,7 @@ class Game:
                 pygame.mouse.set_visible(False)
                 pygame.display.flip()
 
+            # boucle de l'éditeur de map
             while self.map_editor:
 
                 for event in pygame.event.get():
@@ -479,6 +534,10 @@ class Game:
                             self.map_editor = False
                             self.menu = True
                         if self.MapEditor.big_tab == "build":
+                            # si l'utilisateur construit le sol
+                            # tout ca sert à gérer les sélections de sol
+                            # je n'explique pas plus car ce serait des explications inutiles
+                            # et très indigestes étant donné tous les chemins de variable différents
                             if event.key == pygame.K_LEFT and self.MapEditor.mb.actual_selection > 0:
                                 self.MapEditor.mb.actual_selection -= 1
                             if event.key == pygame.K_RIGHT and self.MapEditor.mb.onglet == "grass" and\
@@ -499,19 +558,24 @@ class Game:
                                     self.MapEditor.mb.all_onglets[self.MapEditor.mb.all_onglets.index(self.MapEditor.mb.onglet)-1]
                                 self.MapEditor.mb.actual_selection = 0
                         elif self.MapEditor.big_tab == "decorative":
+                            # si l'utilisateur est actuellement en train de décorer
+                            # gère sa séléction
                             if event.key == pygame.K_LEFT and self.MapEditor.mbd.current_selection > 0:
                                 self.MapEditor.mbd.current_selection -= 1
                             if event.key == pygame.K_RIGHT and self.MapEditor.mbd.current_selection < 11:
                                 self.MapEditor.mbd.current_selection += 1
+                        # si l'utilisateur appuies en meme temps sur controle et sur s, enregistre la map
                         if event.key == pygame.K_s and pygame.key.get_mods() & pygame.KMOD_LCTRL:
-                            self.add_pop_up_saving()
-                            self.MapEditor.show_bar = False
-                            self.MapEditor.main_display()
-                            self.MapEditor.save_map()
+                            self.add_pop_up_saving()  # ajoute une pop up annoncant la sauvegarde
+                            self.MapEditor.show_bar = False  # ceci est sensé faire disparaitre la
+                            self.MapEditor.main_display()    # pour prendre un screenshot de la
+                            self.MapEditor.save_map()        # map pour donner un apreçu
                             self.MapEditor.show_bar = True
+                        # si l'utilisateur appuies en meme temps sur cotrole et sur z
                         if event.key == pygame.K_z and pygame.key.get_mods() & pygame.KMOD_LCTRL:
-                            self.MapEditor.cancel()
+                            self.MapEditor.cancel()  # annule le dernier mouvement (valable qu'une fois)
 
+                        # change d'onglet
                         if event.key == pygame.K_b and self.MapEditor.big_tab != "build":
                             self.MapEditor.big_tab = "build"
                         if event.key == pygame.K_d and self.MapEditor.big_tab != "decorative":
@@ -519,20 +583,25 @@ class Game:
                         if event.key == pygame.K_c and self.MapEditor.big_tab != "collision":
                             self.MapEditor.big_tab = "collision"
 
+                    # si l'utilisatuer fait clique droit, appelle une fonction gérant tous les clics
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         if event.button == 1:
                             # transforme le tuple en liste pour pouvoir le modifier
                             self.MapEditor.click([event.pos[0], event.pos[1]])
-
+                # remplis l'écran de noir
                 self.screen.fill((0, 0, 0))
 
+                # affiche tout le map editor
                 self.MapEditor.main_display()
                 self.group_pop_up_saving.draw(self.screen)
                 self.group_pop_up_saving.update()
 
+                # rends visible la souris
                 pygame.mouse.set_visible(True)
+                # mets à jour l'écran
                 pygame.display.flip()
 
+            # boucle du chargeur de map
             while self.map_loader:
 
                 for event in pygame.event.get():
@@ -540,46 +609,63 @@ class Game:
                     if event.type == pygame.QUIT:
                         self.map_loader = False
                         self.running = False
+                    # quittes le map editor si l'utilisateur fait ECHAP
                     if event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_ESCAPE:
                             self.map_loader = False
                             self.menu = True
 
                     if event.type == pygame.MOUSEBUTTONDOWN:
+                        # si l'utilisateur fait la molette du bas essaies de faire baisser les
+                        # carrés de maps (si il y en a assez)
                         if event.button == 4:
                             try:
                                 if self.find_first(self.MapLoader.maps_group).rect.y < 25:
                                     self.MapLoader.maps_group.update("down", False, pygame.mouse.get_pos())
                             except AttributeError:
                                 pass
+                        # l'inverse avec la molette du haut
                         if event.button == 5:
                             try:
                                 if self.find_last(self.MapLoader.maps_group).rect.y > self.H - 300:
                                     self.MapLoader.maps_group.update("up", False, pygame.mouse.get_pos())
                             except AttributeError:
                                 pass
+                        # si l'utilisatuer clique, check tous les cadres pour voir si on a cliqué sur un
+                        # quelconque bouton, la fonction s'occupe de gérer les boutons
                         if event.button == 1:
                             self.MapLoader.maps_group.update(None, True, pygame.mouse.get_pos())
+                            # ici il s'agit d'un bouton isolé alors il ne fais pas partie du groupe et
+                            # est géré séparemment des autres, il réstaure la map par défaut
                             if self.MapLoader.button_restore_default_surf_rect.collidepoint(event.pos):
                                 self.update_map("basic")
-
+                # affiche tous les attributs du map loader
                 self.MapLoader.maps_group.update(None, False, pygame.mouse.get_pos())
                 self.MapLoader.display()
+                # rends la souris visible
                 pygame.mouse.set_visible(True)
+                # met à jour l'écran
                 pygame.display.flip()
 
+            # boucle principale du jeu
             while self.running:
-
+                """Ici, toutes les instructions (ou presque) sont doublées vu qu'il y a
+                deux joueurs, ainsi le docstring s'applique aux deux joueurs"""
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         self.running = False
                         self.game = False
                     if event.type == pygame.KEYDOWN:
+                        # la touche actuellement préssées devient true sur le dictionnaire
+                        # représentant les touches pressées
                         self.pressed[event.key] = True
                         if event.key == pygame.K_ESCAPE:
                             self.running = False
                             self.menu = True
 
+                        # afin d'animer le personnage, on dit si le joueur appuies sur une touche de
+                        # mouvement et on l'entre dans une liste, comme ca l'ordinateur sait s'il doit
+                        # animer le joueur
                         if event.key == pygame.K_z:
                             self.moving[0] = True
                         if event.key == pygame.K_s:
@@ -604,8 +690,10 @@ class Game:
                             self.attacking2 = True
 
                     if event.type == pygame.KEYUP:
+                        # la touche relevée redevient false sur le dictionnaire des touches pressées
                         self.pressed[event.key] = False
 
+                        # dès que l'utilisateur relève une touche l'index de liste associé retourne sur false
                         if event.key == pygame.K_z:
                             self.moving[0] = False
                         if event.key == pygame.K_s:
@@ -628,7 +716,7 @@ class Game:
                 if self.current_time - self.delay_movement > 50 and self.fighting:
                     # reset le délai
                     self.delay_movement = self.current_time
-                    # si le joueur n'est pas en train d'attaquer, le fait bouger
+                    # si le joueur n'est pas en train d'attaquer ni de bloquer, le fait bouger
                     if not self.attacking:
                         if not self.blocking:
                             if self.pressed.get(pygame.K_z):
@@ -644,6 +732,7 @@ class Game:
                                 self.pl.move("right", self.inside_house_map_player, self.inside_house)
                                 self.direction = "right"
                         if self.pressed.get(pygame.K_a):
+                            # dis si le joueur est en train de bloquer ou pas
                             self.blocking = True
                         else:
                             self.blocking = False
@@ -679,6 +768,9 @@ class Game:
                 self.pl.move_animation(self.direction, self.moving, self.blocking)
                 self.pl2.update(self.inside_house)
                 self.pl2.move_animation(self.direction2, self.moving2, self.blocking2)
+
+                # toutes ces conditions servent à afficher la maison devant ou derriere les joueurs en
+                # en fonction d'ou ils se trouvent afin de rendre le jeu plus réaliste
                 if 10 > self.pl.current_pos[0] > 5:
                     if self.pl.current_pos[1] <= 10 and self.pl2.current_pos[1] <= 10:
                         self.house_group.draw(self.screen)
@@ -694,7 +786,9 @@ class Game:
                         self.pl2.update(self.inside_house)
                 else:
                     self.house_group.draw(self.screen)
+                # dessine les arbres apres le joueur pour que le joueur soit "caché" derriere l'arbre
                 self.decorative_group_tree.draw(self.screen)
+
                 # anime le joueur si il est en train d'attaquer
                 if self.attacking:
                     self.pl.attack(self.direction)
@@ -704,8 +798,12 @@ class Game:
                         self.attacking = False
                         self.hit = False
                         self.pl.index_animation_att = 0
+                        # joue le son de l'impact sur le bouclier (son non fonctionnel sur raspberry pi)
                         self.sound_dict.shield_hit()
 
+                    # si le joueur collisionne l'autre et que l'autre ne bloque pas et que le joueur n'a pas encore
+                    # touché (si il n'y avait pas cette condition, le joueur adverse perdrait de la vie pendant toute
+                    # la durée de la collision) enlève de la vie à l'autre joueur
                     if self.pl.rect.colliderect(self.pl2.rect) and not self.blocking2 and not self.hit:
                         self.hit = True
                         self.pl2.life -= 10
@@ -737,13 +835,14 @@ class Game:
                         self.attacking2 = False
                         self.pl2.index_animation_att = 0
 
-                if self.map_player[self.pl.current_pos[1]][self.pl.current_pos[0]] == 8 and not self.inside_house:
+                # feature d'entrée dans la maison, fonctionnelle mais abandonnée
+                """if self.map_player[self.pl.current_pos[1]][self.pl.current_pos[0]] == 8 and not self.inside_house:
                     self.inside_house = False
                     self.direction = "right"
 
                 if self.map_player[self.pl2.current_pos[1]][self.pl2.current_pos[0]] == 8 and not self.inside_house2:
                     self.inside_house2 = False
-                    self.direction2 = "right"
+                    self.direction2 = "right"""
 
                 # feature d'entrée dans la maison, fonctionnelle mais abandonnée
                 """if self.inside_house:
@@ -785,6 +884,7 @@ class Game:
                         self.inside_house2 = False
                         self.pl2.current_pos = [30, 2]
                         self.pl2.inside_pos = [8, 8]"""
+                # affiche les barres de vies
                 self.pl.life_bar()
                 self.pl2.life_bar()
                 self.DisplayAth.main_display()
@@ -792,6 +892,7 @@ class Game:
                     self.fighting = True
 
                 # condition de victoire :
+                # victoire de round, vie nulle
                 if self.pl.life == 0:
                     self.score2 += 1
                     self.reset_game()
@@ -799,6 +900,7 @@ class Game:
                     self.score1 += 1
                     self.reset_game()
 
+                # victoire de partie, score == 3
                 if self.score1 == 3:
                     self.winner = 1
                     self.running = False
@@ -813,16 +915,19 @@ class Game:
                 pygame.display.flip()  # met à jour l'écran
                 self.clock.tick(60)  # met les FPS à 60
 
+            # boucle de fin de partie
             while self.end_screen:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         self.game = False
                         self.end_screen = False
                     if event.type == pygame.KEYDOWN:
+                        # navigue entre les deux séléctions (sois quitter sois rejouer)
                         if event.key == pygame.K_LEFT and self.actual_selection_end_screen == 1:
                             self.actual_selection_end_screen = 0
                         if event.key == pygame.K_RIGHT and self.actual_selection_end_screen == 0:
                             self.actual_selection_end_screen = 1
+                        # touche enter pressées, actionne les boutons
                         if event.key == 13:
                             if self.actual_selection_end_screen == 0:
                                 self.reset_entirely()
@@ -833,15 +938,19 @@ class Game:
                                 self.end_screen = False
                             self.winner = None
 
+                # dessine l'arriere plan
                 self.ground_group.draw(self.screen)
                 self.decorative_group_others.draw(self.screen)
                 self.decorative_group_tree.draw(self.screen)
                 self.house_group.draw(self.screen)
+                # dessine tout ce qui est lié à l'écran de fin
                 self.DisplayAth.display_end_screen(self.actual_selection_end_screen, self.winner)
                 pygame.display.flip()
 
 
 def close_map_editor():
+    """Eteins le map éditor en mettant à jour la map actuelle pour que quand le joueur quitte,
+    il revienne sur une map vierge"""
     with open("map storage/actual_map.json") as actual_map:
         current_map = json.load(actual_map)
 
