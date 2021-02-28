@@ -6,7 +6,7 @@ class Player:
     def __init__(self, screen, current_map):
         self.screen = screen
         self.map = current_map
-        self.current_pos = [22, 18]
+        self.current_pos = [35, 1]
         self.inside_pos = [1, 4]
         self.life = 100
         self.W = self.screen.get_width()
@@ -214,9 +214,6 @@ class Player:
                     print(e)
 
     def update(self, inside_house):
-        pygame.draw.rect(self.screen, (0, 0, 0), [self.W - 10 - (self.W // 2 - 100), 5, self.W // 2 - 100, 10])
-        pygame.draw.rect(self.screen, (255, 0, 0), [self.W - 10 - (((self.W // 2) // 100) * self.life), 5, ((self.W // 2) // 100) * self.life, 10])
-        self.screen.blit(self.name, self.name_rect)
         self.rect = self.image.get_rect()
         try:
             print(self.map[self.current_pos[1]][self.current_pos[0]], self.current_pos)
@@ -228,3 +225,11 @@ class Player:
         else:
             self.rect.center = self.inside_pos[0] * 50 + 25 + 250, self.inside_pos[1] * 50 + 25 + 250
             self.screen.blit(self.image, self.rect)
+
+    def life_bar(self):
+
+        pygame.draw.rect(self.screen, (0, 0, 0), [self.W - 10 - (self.W // 2 - 150), 5, self.W // 2 - 150, 10])
+        pygame.draw.rect(self.screen, (255, 0, 0),
+                         [self.W - 10 - (((self.W // 2 - 150) // 100) * self.life), 5, ((self.W // 2 - 150) // 100) * self.life,
+                          10])
+        self.screen.blit(self.name, self.name_rect)

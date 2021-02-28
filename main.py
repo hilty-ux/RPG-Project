@@ -12,6 +12,7 @@ import Ennemies as En
 import Map_Editor as Me
 import map_loader as ml
 import Sound_manager as Sm
+import Display_ath as D_ath
 
 
 class Game:
@@ -24,6 +25,7 @@ class Game:
         # variables de bases définissant les stade du jeu
         self.screen = screen
         self.game = True
+        self.fighting = False
         self.menu = True
         self.running = False
         self.map_editor = False
@@ -38,66 +40,54 @@ class Game:
         # crée les maps, sous formes de listes de listes contenant pour chaque chiffre une information sur le bloc,
         # il y a différentes listes pour représenter différentes "couches", d'abord le sol, puis les objets decoratifs
         self.map_ground_default = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 4, 6, 6, 6, 6, 6, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 1, 5, 7, 7, 7, 7, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+                                   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                   [0, 0, 0, 4, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                   [0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                   [0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                   [0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                   [0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
         # pour rendre le mouvement plus fluide, la classe du joueur est deux fois plus importantes que celle de
         # l'environnement, pour que le joueur se déplace de demi-cases mais que l'environnement soit constitué de
         # cases à part entière
         self.map_player_default = [
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0],
-         [0, 0, 0, 0, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0],
-         [0, 3, 3, 0, 0, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0],
-         [0, 3, 3, 3, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0],
-         [0, 3, 3, 3, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 3, 3, 3, 1, 1, 1, 1, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 3, 3, 0, 1, 1, 1, 1, 0, 0, 0, 9, 8, 8, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 9, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+         [0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0],
+         [0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0],
+         [0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
+         [0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
-        self.map_others_default = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0],
-                           [0, 6, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0],
-                           [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 0],
-                           [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 1, 0, 0, 0, 0, 5, 0, 0, 2, 0, 4, 0, 0, 0, 2, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0],
-                           [0, 2, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0, 0],
-                           [0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0],
-                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 6, 0, 0],
-                           [0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-
-        self.map_hostile_default = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0],
-                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 1, 1, 2, 0],
-                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 1, 1, 2, 0],
-                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 1, 1, 2, 0],
-                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0],
-                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0],
-                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0],
-                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+        self.map_others_default = [[0, 1, 0, 3, 6, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                   [2, 2, 1, 0, 0, 3, 2, 0, 0, 0, 0, 0, 2, 0, 0, 3, 0, 0, 0, 0],
+                                   [0, 3, 2, 0, 0, 0, 0, 6, 0, 2, 3, 0, 0, 2, 0, 0, 0, 0, 2, 0],
+                                   [0, 0, 0, 5, 0, 2, 2, 0, 0, 0, 0, 0, 0, 6, 0, 2, 0, 2, 0, 0],
+                                   [0, 4, 0, 0, 0, 4, 0, 2, 0, 2, 0, 0, 0, 1, 0, 0, 2, 2, 6, 0],
+                                   [0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0],
+                                   [0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 3, 0, 2, 0],
+                                   [0, 0, 0, 0, 0, 0, 2, 0, 0, 3, 0, 0, 6, 0, 2, 0, 0, 0, 0, 0],
+                                   [0, 2, 2, 0, 0, 0, 0, 2, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 0],
+                                   [0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0],
+                                   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
         # initialise les variables relatives au joueur ; sa direction de départ, ses statuts ainsi que sa classe
         self.pl = Player.Player(self.screen, self.map_player_default)
@@ -108,6 +98,8 @@ class Game:
         self.moving2 = [False, False, False, False]
         self.attacking = False
         self.attacking2 = False
+        self.score1 = 0
+        self.score2 = 0
 
         # crée un dictionnaire de touches préssées ou non
         self.pressed = {}
@@ -166,11 +158,6 @@ class Game:
         self.inside_house_group_ground = pygame.sprite.Group()
         self.add_ground = lambda x, y: self.inside_house_group_ground.add(Gr.InsideGround((x, y)))
         self.add_wall = lambda x, y: self.inside_house_group_ground.add(Gr.InsideWall((x, y)))
-
-        # partie du monstre
-        self.mon = En.Monster(self.screen, self.map_hostile_default)
-        self.monster_group = pygame.sprite.Group()
-        self.monster_group.add(self.mon)
 
         # seconde map (intérieur maison)
 
@@ -243,6 +230,8 @@ class Game:
         self.pl2 = Player2.Player(self.screen, self.map_player)
 
         self.sound_dict = Sm.SoundManager()
+
+        self.DisplayAth = D_ath.DisplayAth(self.screen, self.score1, self.score2)
 
     def update_map(self, basic):
 
@@ -382,12 +371,6 @@ class Game:
                 elif self.inside_house_map_ground_n_walls[row][cell] == 1:
                     self.add_wall(cell*100+250, row*100+150)
 
-    def find_collision(self):
-
-        for sprite in self.monster_group:
-            if self.pl.rect.colliderect(sprite.rect):
-                sprite.kill()
-
     def find_last(self, group):
         last = None
         for sprites in group:
@@ -398,6 +381,20 @@ class Game:
     def find_first(self, group):
         for sprites in group:
             return sprites
+
+    def reset_game(self):
+        self.pl = Player.Player(self.screen, self.map_player_default)
+        self.pl2 = Player2.Player(self.screen, self.map_player_default)
+        self.DisplayAth = D_ath.DisplayAth(self.screen, self.score1, self.score2)
+        self.fighting = False
+
+    def reset_entirely(self):
+        self.score1 = 0
+        self.score2 = 0
+        self.pl = Player.Player(self.screen, self.map_player_default)
+        self.pl2 = Player2.Player(self.screen, self.map_player_default)
+        self.DisplayAth = D_ath.DisplayAth(self.screen, self.score1, self.score2)
+        self.fighting = False
 
     def main_loop(self):
 
@@ -434,6 +431,8 @@ class Game:
                             if self.actual_selection == 0:
                                 self.menu = False
                                 self.running = True
+                                self.DisplayAth = D_ath.DisplayAth(self.screen, self.score1, self.score2)
+                                self.reset_entirely()
                             elif self.actual_selection == 1:
                                 self.menu = False
                                 self.map_editor = True
@@ -450,6 +449,7 @@ class Game:
 
                 self.ground_group.draw(self.screen)
                 self.decorative_group_others.draw(self.screen)
+                self.house_group.draw(self.screen)
                 self.decorative_group_tree.draw(self.screen)
                 self.screen.blit(self.flou, (0, 0))
 
@@ -621,7 +621,7 @@ class Game:
                             self.moving2[3] = False
 
                 # limite le mouvement du joueur à 1 toutes les 50 ms
-                if self.current_time - self.delay_movement > 50:
+                if self.current_time - self.delay_movement > 50 and self.fighting:
                     # reset le délai
                     self.delay_movement = self.current_time
                     # si le joueur n'est pas en train d'attaquer, le fait bouger
@@ -644,7 +644,7 @@ class Game:
                         else:
                             self.blocking = False
 
-                if self.current_time - self.delay_movement2 > 50:
+                if self.current_time - self.delay_movement2 > 50 and self.fighting:
                     # reset le délai
                     self.delay_movement2 = self.current_time
                     # si le joueur n'est pas en train d'attaquer, le fait bouger
@@ -670,37 +670,31 @@ class Game:
                 # dessine/met à jour tous les composants du jeu (sol, joueur, décoration...)
                 self.ground_group.draw(self.screen)
                 self.decorative_group_others.draw(self.screen)
-                if self.pl.current_pos[1] > 11:
-                    self.house_group.draw(self.screen)
-                    #if self.map_player[self.pl.current_pos[1]][self.pl.current_pos[0]] == 9 or \
-                    #        self.map_player[self.pl.current_pos[1]][self.pl.current_pos[0]] == 8:
-                    #    pygame.draw.polygon(self.screen, (88, 41, 0), [(548, 485), (587, 485), (587, 530), (547, 530)])
 
-                if self.pl2.current_pos[1] > 11:
-                    self.house_group.draw(self.screen)
-                    # if self.map_player[self.pl2.current_pos[1]][self.pl2.current_pos[0]] == 9 or \
-                    #         self.map_player[self.pl2.current_pos[1]][self.pl2.current_pos[0]] == 8:
-                    #    pygame.draw.polygon(self.screen, (88, 41, 0), [(548, 485), (587, 485), (587, 530), (547, 530)])
-
-                if self.chosen_map == "basic":
-                    self.monster_group.draw(self.screen)
-                    self.monster_group.update(self.pl.current_pos)
                 self.pl.update(self.inside_house)
                 self.pl.move_animation(self.direction, self.moving, self.blocking)
                 self.pl2.update(self.inside_house)
                 self.pl2.move_animation(self.direction2, self.moving2, self.blocking2)
-                if self.pl.current_pos[1] <= 11:
-                    self.house_group.draw(self.screen)
-                if self.pl2.current_pos[1] <= 11:
+                if 10 > self.pl.current_pos[0] > 5:
+                    if self.pl.current_pos[1] <= 10 and self.pl2.current_pos[1] <= 10:
+                        self.house_group.draw(self.screen)
+                    elif self.pl.current_pos[1] <= 10 and self.pl2.current_pos[1] >= 10:
+                        self.house_group.draw(self.screen)
+                        self.pl2.update(self.inside_house)
+                    elif self.pl.current_pos[1] >= 11 and self.pl2.current_pos[1] <= 11:
+                        self.house_group.draw(self.screen)
+                        self.pl.update(self.inside_house)
+                    else:
+                        self.house_group.draw(self.screen)
+                        self.pl.update(self.inside_house)
+                        self.pl2.update(self.inside_house)
+                else:
                     self.house_group.draw(self.screen)
                 self.decorative_group_tree.draw(self.screen)
                 # anime le joueur si il est en train d'attaquer
                 if self.attacking:
                     self.pl.attack(self.direction)
-                    if self.pl.index_animation_att == 2:
-                        if 35 > self.pl.current_pos[0] > 25 and \
-                                0 < self.pl.current_pos[1] < 10:
-                            self.find_collision()
+
                     # crée un effet butoir sur le bouclier adverse
                     if self.pl.rect.colliderect(self.pl2.rect) and self.blocking2:
                         self.attacking = False
@@ -721,10 +715,6 @@ class Game:
 
                 if self.attacking2:
                     self.pl2.attack(self.direction2)
-                    if self.pl2.index_animation_att == 2:
-                        if 35 > self.pl2.current_pos[0] > 25 and \
-                                0 < self.pl2.current_pos[1] < 10:
-                            self.find_collision()
                     # crée un effet butoir sur le bouclier adverse
                     if self.pl.rect.colliderect(self.pl2.rect) and self.blocking:
                         self.attacking2 = False
@@ -751,7 +741,8 @@ class Game:
                     self.inside_house2 = False
                     self.direction2 = "right"
 
-                if self.inside_house:
+                # feature d'entrée dans la maison, fonctionnelle mais abandonnée
+                """if self.inside_house:
                     self.screen.blit(self.flou, (0, 0))
                     self.inside_house_group_ground.draw(self.screen)
                     self.inside_house_group_decorative.draw(self.screen)
@@ -789,10 +780,20 @@ class Game:
                     if self.inside_house_map_player[index[1]][index[0]] == 9:
                         self.inside_house2 = False
                         self.pl2.current_pos = [30, 2]
-                        self.pl2.inside_pos = [8, 8]
+                        self.pl2.inside_pos = [8, 8]"""
+                self.pl.life_bar()
+                self.pl2.life_bar()
+                self.DisplayAth.main_display()
+                if self.DisplayAth.main_display() == "FIGHT":
+                    self.fighting = True
 
-                """if len(self.monster_group) == 0:
-                    self.running = False"""
+                # condition de victoire :
+                if self.pl.life == 0:
+                    self.score2 += 1
+                    self.reset_game()
+                elif self.pl2.life == 0:
+                    self.score1 += 1
+                    self.reset_game()
 
                 pygame.mouse.set_visible(False)  # rends invisible la souris
                 self.current_time = pygame.time.get_ticks()  # met à jour le temps
