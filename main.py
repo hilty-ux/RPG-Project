@@ -28,6 +28,7 @@ class Game:
         self.fighting = False
         self.menu = True
         self.running = False
+        self.end_screen = False
         self.map_editor = False
         self.map_loader = False
         self.inside_house = False
@@ -36,6 +37,7 @@ class Game:
         self.blocking2 = False
         self.hit = False
         self.hit2 = False
+        self.winner = None
 
         # crée les maps, sous formes de listes de listes contenant pour chaque chiffre une information sur le bloc,
         # il y a différentes listes pour représenter différentes "couches", d'abord le sol, puis les objets decoratifs
@@ -232,6 +234,8 @@ class Game:
         self.sound_dict = Sm.SoundManager()
 
         self.DisplayAth = D_ath.DisplayAth(self.screen, self.score1, self.score2)
+
+        self.actual_selection_end_screen = 0
 
     def update_map(self, basic):
 
@@ -795,10 +799,46 @@ class Game:
                     self.score1 += 1
                     self.reset_game()
 
+                if self.score1 == 3:
+                    self.winner = 1
+                    self.running = False
+                    self.end_screen = True
+                elif self.score2 == 3:
+                    self.winner = 2
+                    self.running = False
+                    self.end_screen = True
+
                 pygame.mouse.set_visible(False)  # rends invisible la souris
                 self.current_time = pygame.time.get_ticks()  # met à jour le temps
                 pygame.display.flip()  # met à jour l'écran
                 self.clock.tick(60)  # met les FPS à 60
+
+            while self.end_screen:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        self.game = False
+                        self.end_screen = False
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_LEFT and self.actual_selection_end_screen == 1:
+                            self.actual_selection_end_screen = 0
+                        if event.key == pygame.K_RIGHT and self.actual_selection_end_screen == 0:
+                            self.actual_selection_end_screen = 1
+                        if event.key == 13:
+                            if self.actual_selection_end_screen == 0:
+                                self.reset_entirely()
+                                self.end_screen = False
+                                self.running = True
+                            else:
+                                self.menu = True
+                                self.end_screen = False
+                            self.winner = None
+
+                self.ground_group.draw(self.screen)
+                self.decorative_group_others.draw(self.screen)
+                self.decorative_group_tree.draw(self.screen)
+                self.house_group.draw(self.screen)
+                self.DisplayAth.display_end_screen(self.actual_selection_end_screen, self.winner)
+                pygame.display.flip()
 
 
 def close_map_editor():
