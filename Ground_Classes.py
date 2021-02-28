@@ -1,5 +1,8 @@
 import pygame as pg
 
+"""Chaque classes représente un sol différent, ces classes héritent de la superclasse pg.sprite.Sprite,
+afin qu'ils soit ajoutable dans un groupe."""
+
 
 class Grass(pg.sprite.Sprite):  # herbe standard
 
