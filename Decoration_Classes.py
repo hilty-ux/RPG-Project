@@ -1,5 +1,8 @@
 import pygame as pg
 
+"""Chaque classes représente une décoration différent, ces classes héritent de la superclasse pg.sprite.Sprite,
+afin qu'ils soit ajoutable dans un groupe."""
+
 
 class BlueTree(pg.sprite.Sprite):
 
